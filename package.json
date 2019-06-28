@@ -7,14 +7,16 @@
     "title": "BackBit Tool",
     "min_width": 790,
     "min_height": 500,
-    "icon": "icon.png"
+    "icon": "icon.png",
+    "show": false
   },
   "scripts": {
     "dev": "npm install nw --nwjs_build_type=sdk",
     "start": "nw",
     "deploy": "node deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "open \"build/BackBit Tool/osx64/BackBit Tool.app\""
+    "prod": "open \"build/BackBit Tool/osx64/BackBit Tool.app\"",
+    "install": "rm -rf \"/Applications/BackBit Tool.app\" && cp -R \"build/BackBit Tool/osx64/BackBit Tool.app\" /Applications"
   },
   "repository": {
     "type": "git",
