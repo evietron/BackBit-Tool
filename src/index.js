@@ -9,7 +9,4 @@ if (process.versions['nw-flavor'] === 'normal') {
 
 nw.Window.get().on('loaded', function() {
     nw.Window.get().show();
-    // document.write("HEY... ", process.platform, " HOO!")
 })
-
-// console.log("stuff!!!!")
