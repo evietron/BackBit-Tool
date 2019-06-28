@@ -2,7 +2,12 @@
   "name": "backbit-tool",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.html",
+  "window": {
+    "title": "BackBit Tool",
+    "min_width": 790,
+    "min_height": 500
+  },
   "scripts": {
     "start": "nw",
     "deploy": "node deploy.js",

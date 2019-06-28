@@ -1,7 +1,8 @@
 var NwBuilder = require('nw-builder');
 var nw = new NwBuilder({
   files: ['*.json', 'index.*'], // simple-glob format
-  platforms: ['osx64', 'win64', 'linux64']
+  platforms: ['osx64', 'win64', 'linux64'],
+  appName: "BackBit Tool"
 });
 
 nw.build().then(function () {
