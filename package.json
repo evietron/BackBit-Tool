@@ -9,6 +9,7 @@
     "min_height": 500
   },
   "scripts": {
+    "dev": "npm install nw --nwjs_build_type=sdk",
     "start": "nw",
     "deploy": "node deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1"
