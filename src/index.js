@@ -1,7 +1,12 @@
+const VERSION = 0x01000000;
+
+let fs = require('fs');
+
 let handlers = {};
 let pathProgram = null;
 let pathsMount = [];
 let pathData = null;
+let buffer = [];
 
 // fix mac application menu title in production build
 if (process.versions['nw-flavor'] === 'normal') {
@@ -79,11 +84,138 @@ function newFile() {
     }
 }
 
+
+function clearBuffer() {
+    buffer = [];
+}
+
+function stringToBytes(s) {
+    let data = [];
+    for (let i = 0; i < s.length; i++) {
+        data.push(s.charCodeAt(i));
+    }
+    return data;
+}
+
+function stringToUInt32(s) {
+    return (s.charCodeAt(0) << 24) +
+        (s.charCodeAt(1) << 16) +
+        (s.charCodeAt(2) << 8) +
+        s.charCodeAt(3);
+}
+
+function bufferAddString(s) {
+    for (let i = 0; i < s.length; i++) {
+        buffer.push(s.charCodeAt(i));
+    }
+}
+
+function bufferAddUInt32(i) {
+    buffer.push((i >> 24) & 0xff);
+    buffer.push((i >> 16) & 0xff);
+    buffer.push((i >> 8) & 0xff);
+    buffer.push(i & 0xff);
+}
+
+function writeBuffer(fd, data) {
+    fs.writeSync(fd, Buffer.from(data ? data : buffer));
+}
+
+function writePaddedBuffer(fd, data) {
+    writeBuffer(fd, data);
+    let byteOffset = data.length % 16;
+    if (byteOffset > 0) {
+        writeBuffer(fd, new Array(16 - byteOffset));
+    }
+}
+
+function writeBlock(fd, name, id, data) {
+    clearBuffer();
+    bufferAddString(name);
+    bufferAddUInt32(id);
+    bufferAddUInt32(data ? data.length : 0);
+    writeBuffer(fd);
+    if (data) {
+        writePaddedBuffer(fd, data);
+    }
+}
+
+function writeHeader(fd) {
+    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), stringToBytes("VERSION 1.0.0"));
+}
+
+function writeFooter(fd) {
+    writeBlock(fd, 'BACKBITS', stringToUInt32('BACK'));
+}
+
+function writeProgram(fd, addr, data) {
+    let i = addr << 16;
+    let endAddr = addr + data.length - 1;
+    if (endAddr < 65536) {
+        i += endAddr;
+    }
+    writeBlock(fd, 'STARTPRG', i, data);
+}
+
+function writeMount(fd, ext, device, data) {
+    writeBlock(fd, 'MOUNT' + ext, device, data);
+}
+
+function renderData(fd) {
+    let stats = fs.statSync(pathData);
+    let len = stats['size'];
+    clearBuffer();
+    bufferAddString('EXTENDED');
+    bufferAddUInt32(len >> 32);
+    bufferAddUInt32(len);
+    writeBuffer(fd);
+
+    let fdSrc = fs.openSync(pathData);
+    let data = Array(65536);
+    while (len > 0) {
+        let readLen = fs.readSync(fdSrc, Buffer.from(data), 0, Math.min(len, 65536));
+        if (readLen < 65536) {
+            data = data.slice(0, readLen);
+        }
+        writePaddedBuffer(fd, data);
+        len -= readLen;
+    }
+}
+
 function build(path) {
     if (!path.toLowerCase().endsWith('.bbt')) {
         path += '.bbt';
     }
-    alert("BUILDING to " + path);
+
+    try {
+        let fd = fs.openSync(path, 'w');
+        if (fd) {
+            writeHeader(fd);
+            if (pathProgram) {
+                let data = fs.readFileSync(pathProgram);
+                if (data.length > 2) {
+                    let addr = data[0];
+                    addr += data[1] << 8;
+                    writeProgram(fd, addr, [...data].slice(2));
+                } else {
+                    alert("Startup program is invalid");
+                }
+            }
+            for (let i = 0; i < pathsMount.length; i++) {
+                let data = fs.readFileSync(pathsMount[i]);
+                writeMount(fd, pathsMount[i].slice(pathsMount[i].length - 3).toUpperCase(), 8 + i, data);
+            }
+            if (pathData) {
+                renderData(fd);
+            }
+            writeFooter(fd);
+            fs.closeSync(fd);
+        } else {
+            alert("Can't open " + path);
+        }
+    } catch (e) {
+        alert("ERROR: " + e);
+    }
 }
 
 function saveAsFile() {
