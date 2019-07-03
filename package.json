@@ -6,6 +6,7 @@
   "window": {
     "title": "BackBit Tool",
     "min_width": 790,
+    "max_width": 790,
     "min_height": 550,
     "icon": "icon.png",
     "show": false

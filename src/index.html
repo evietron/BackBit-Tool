@@ -6,10 +6,66 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     </head>
   <body>
+    <input style="display:none;" id="bbtFileDialog" type="file" accept=".bbt" />
+    <input style="display:none;" id="prgFileDialog" type="file" accept=".prg" />
+    <input style="display:none;" id="d64FileDialog" type="file" accept=".d64" />
+    <input style="display:none;" id="binFileDialog" type="file" />
     <header></header>
     <div class="main">
       <aside class="left"></aside>
-      <main class="mid"></main>
+      <main class="mid">
+        <table><tr><td><img src="logo.png" width="100%"></td></tr></table>
+        <div style="font-family: Arial, Helvetica, sans-serif; text-align: right">Tool v1.0.0</div>
+        <p>The BackBit Tool assembles BBT files out of existing PRG, D64 and binary resources.</p>
+        <button id="buttonNew">New</button>
+        <button id="buttonSaveAs">Save As...</button>
+        <div><strong style="text-align: left">LEVEL I: Startup Program</strong></div>
+        <div class="row">
+          <div class="item" id="pathProgram"></div>
+          <button id="buttonAddProgram">+</button>
+          <div class="close"><button id="buttonRemoveProgram">X</button></div>
+        </div>
+        <div><strong style="text-align: left">LEVEL II: Mounted Disks</strong></div>
+        <div class="row">
+          <div class="item" id="pathMount1"></div>
+          <div class="close"><button id="buttonRemoveMount1">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount2"></div>
+          <div class="close"><button id="buttonRemoveMount2">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount3"></div>
+          <div class="close"><button id="buttonRemoveMount3">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount4"></div>
+          <div class="close"><button id="buttonRemoveMount4">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount5"></div>
+          <div class="close"><button id="buttonRemoveMount5">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount6"></div>
+          <div class="close"><button id="buttonRemoveMount6">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount7"></div>
+          <div class="close"><button id="buttonRemoveMount7">X</button></div>
+        </div>
+        <div class="row">
+          <div class="item" id="pathMount8"></div>
+          <div class="close"><button id="buttonRemoveMount8">X</button></div>
+        </div>
+        <button id="buttonAddMount">+</button>
+        <div><strong style="text-align: left">LEVEL III: Extended Data</strong></div>
+        <div class="row">
+          <div class="item" id="pathData"></div>
+          <button id="buttonAddData">+</button>
+          <div class="close"><button id="buttonRemoveData">X</button></div>
+        </div>
+      </main>
       <aside class="right"></aside>
     </div>
     <footer></footer>
