@@ -76,3 +76,23 @@ button:active {
   box-shadow: 0 0px;
   transform: translateY(4px);
 }
+
+.blurb {
+  color: #666;
+}
+
+.flag,
+.spec {
+  color: red;
+}
+
+.flag {
+  transform: translateY(0.5em);
+  padding: 0 0.25em;
+}
+
+.level {
+  font-weight: bold;
+  text-align: left;
+  margin-top: 0.5em;
+}

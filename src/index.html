@@ -6,26 +6,28 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     </head>
   <body>
-    <input style="display:none;" id="bbtFileDialog" type="file" accept=".bbt" />
-    <input style="display:none;" id="prgFileDialog" type="file" accept=".prg" />
-    <input style="display:none;" id="d64FileDialog" type="file" accept=".d64" />
-    <input style="display:none;" id="binFileDialog" type="file" />
+    <input style="display:none" id="bbtFileDialog" type="file" nwsaveas="Untitled.bbt" />
+    <input style="display:none" id="prgFileDialog" type="file" accept=".prg" />
+    <input style="display:none" id="d64FileDialog" type="file" accept=".d64,.d71,.d81" />
+    <input style="display:none" id="binFileDialog" type="file" />
     <header></header>
     <div class="main">
       <aside class="left"></aside>
       <main class="mid">
         <table><tr><td><img src="logo.png" width="100%"></td></tr></table>
         <div style="font-family: Arial, Helvetica, sans-serif; text-align: right">Tool v1.0.0</div>
-        <p>The BackBit Tool assembles BBT files out of existing PRG, D64 and binary resources.</p>
+        <p>The BackBit Tool assembles <span class="spec">.BBT</span> files out of existing program, disk and binary resources.</p>
         <button id="buttonNew">New</button>
         <button id="buttonSaveAs">Save As...</button>
-        <div><strong style="text-align: left">LEVEL I: Startup Program</strong></div>
+        <div class="level">LEVEL I: Startup Program</div>
+        <div class="blurb">Not required, but if not present then a mounted disk must be present.</div>
         <div class="row">
           <div class="item" id="pathProgram"></div>
-          <button id="buttonAddProgram">+</button>
+          <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG</div></div>
           <div class="close"><button id="buttonRemoveProgram">X</button></div>
         </div>
-        <div><strong style="text-align: left">LEVEL II: Mounted Disks</strong></div>
+        <div class="level">LEVEL II: Mounted Disks</div>
+        <div class="blurb">Can mount up to 8 disks. If no startup program is present, the program will be started with <strong>LOAD "*",8,1</strong>.</div>
         <div class="row">
           <div class="item" id="pathMount1"></div>
           <div class="close"><button id="buttonRemoveMount1">X</button></div>
@@ -58,8 +60,9 @@
           <div class="item" id="pathMount8"></div>
           <div class="close"><button id="buttonRemoveMount8">X</button></div>
         </div>
-        <button id="buttonAddMount">+</button>
-        <div><strong style="text-align: left">LEVEL III: Extended Data</strong></div>
+        <div id="divAddMount"><button id="buttonAddMount">+</button><div class="flag">*.D64 *.D71 *.D81</div></div>
+        <div class="level">LEVEL III: Extended Data</div>
+        <div class="blurb">Optional. Add up to 4GB of raw binary data, accessible in 64K chunks.</div>
         <div class="row">
           <div class="item" id="pathData"></div>
           <button id="buttonAddData">+</button>

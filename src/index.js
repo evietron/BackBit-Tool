@@ -2,7 +2,6 @@ let handlers = {};
 let pathProgram = null;
 let pathsMount = [];
 let pathData = null;
-let isModified = false;
 
 // fix mac application menu title in production build
 if (process.versions['nw-flavor'] === 'normal') {
@@ -32,13 +31,21 @@ function shortenPath(path) {
     return path;
 }
 
+function isEmpty() {
+    return !pathProgram && !pathsMount.length && !pathData;
+}
+
+function isValid() {
+    return pathProgram || pathsMount.length;
+}
+
 function updateButtonStates() {
-    $('#buttonNew').disabled = !isModified;
-    $('#buttonSaveAs').disabled = !isModified;
-    $('#buttonAddProgram').style.display = pathProgram ? 'none' : 'flex';
+    $('#buttonNew').disabled = isEmpty();
+    $('#buttonSaveAs').disabled = !isValid();
+    $('#divAddProgram').style.display = pathProgram ? 'none' : 'flex';
     $('#buttonRemoveProgram').style.display = pathProgram ? 'flex' : 'none';
         $('#pathProgram').style.display = pathProgram ? 'flex' : 'none';
-    $('#buttonAddMount').style.display = (pathsMount.length === 8) ? 'none' : 'flex';
+    $('#divAddMount').style.display = (pathsMount.length === 8) ? 'none' : 'flex';
     for (let i = 1; i <= 8; i++) {
         $('#buttonRemoveMount' + i).style.display =
             $('#pathMount' + i).style.display = (pathsMount.length >= i) ? 'flex' : 'none';
@@ -68,25 +75,32 @@ function newFile() {
         pathProgram = null;
         pathsMount = [];
         pathData = null;
-        isModified = false;
         updateButtonStates();
     }
 }
 
+function build(path) {
+    if (!path.toLowerCase().endsWith('.bbt')) {
+        path += '.bbt';
+    }
+    alert("BUILDING to " + path);
+}
+
 function saveAsFile() {
+    chooseFile('#bbtFileDialog', function(path) {
+        build(path);
+    });
 }
 
 function addProgram() {
     chooseFile('#prgFileDialog', function(path) {
         pathProgram = path;
         $('#pathProgram').innerHTML = shortenPath(pathProgram);
-        isModified = true;
         updateButtonStates();
     });
 }
 
 function removeProgram() {
-    isModified = true;
     pathProgram = null;
     updateButtonStates();
 }
@@ -101,13 +115,11 @@ function addMount() {
     chooseFile('#d64FileDialog', function(path) {
         pathsMount.push(path);
         updateMounts();
-        isModified = true;
         updateButtonStates();
     });
 }
 
 function removeMount(index) {
-    isModified = true;
     pathsMount.splice(index, 1);
     updateMounts();
     updateButtonStates();
@@ -117,13 +129,11 @@ function addData() {
     chooseFile('#binFileDialog', function(path) {
         pathData = path;
         $('#pathData').innerHTML = shortenPath(pathData);
-        isModified = true;
         updateButtonStates();
     });
 }
 
 function removeData() {
-    isModified = true;
     pathData = null;
     updateButtonStates();
 }
