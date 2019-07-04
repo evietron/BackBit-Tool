@@ -5,6 +5,11 @@ body {
   margin: 0;
 }
 
+body {
+  background-color: black;
+  color: white;
+}
+
 body,
 .main {
   display: flex;
@@ -18,11 +23,13 @@ body,
 }
 
 .item {
+  font-family: Arial, Helvetica, sans-serif;  
   align-self: center;
   border: 1px solid;
   border-radius: 0.5em;
   padding: 0.3em 0.4em 0.5em 0.4em;
   margin-right: 0.5em;
+  color: lightskyblue;
 }
 
 .left {
@@ -59,40 +66,61 @@ button {
   font-size: 1em;
   margin: 0.25em 0.25em 1em 0;
   border-radius: 0.5em;
-  background-color: lightgray;
-  box-shadow: 0 5px #666;
+  background-color: #444;
+  box-shadow: 0 5px #222;
+  border-color: black;
+  color: #aaa;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000; 
 }
 
 .close {
   transform: translateY(0.25em);
 }
 
+button:disabled {
+  color: #222;
+  text-shadow: none;
+}
+
 button:focus {
   outline: 0;
-  border-color: black;
+  background-color: #888;
+  border-color: #444;
 }
 
 button:active {
-  box-shadow: 0 0px;
-  transform: translateY(4px);
+  box-shadow: 0 3px #222;
+  transform: translateY(2px);
 }
 
 .blurb {
-  color: #666;
+  color: #888;
+  font-size: 13pt;
 }
 
 .flag,
 .spec {
   color: red;
+  font-size: 14pt;
 }
 
 .flag {
-  transform: translateY(0.5em);
+  transform: translateY(0.25em);
   padding: 0 0.25em;
 }
 
 .level {
-  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
   text-align: left;
   margin-top: 0.5em;
+}
+
+.version {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: right;
+  font-size: 13pt;
 }
