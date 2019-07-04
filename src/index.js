@@ -118,14 +118,14 @@ function bufferAddUInt32(i) {
 }
 
 function writeBuffer(fd, data) {
-    fs.writeSync(fd, Buffer.from(data ? data : buffer));
+    fs.writeSync(fd, data ? data : Buffer.from(buffer));
 }
 
 function writePaddedBuffer(fd, data) {
     writeBuffer(fd, data);
     let byteOffset = data.length % 16;
     if (byteOffset > 0) {
-        writeBuffer(fd, new Array(16 - byteOffset));
+        writeBuffer(fd, Buffer.alloc(16 - byteOffset, 0));
     }
 }
 
@@ -141,7 +141,7 @@ function writeBlock(fd, name, id, data) {
 }
 
 function writeHeader(fd) {
-    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), stringToBytes("VERSION 1.0.0"));
+    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), Buffer.from(stringToBytes('VERSION 1.0.0')));
 }
 
 function writeFooter(fd) {
@@ -171,9 +171,9 @@ function renderData(fd) {
     writeBuffer(fd);
 
     let fdSrc = fs.openSync(pathData);
-    let data = Array(65536);
+    let data = Buffer.alloc(65536, 0);
     while (len > 0) {
-        let readLen = fs.readSync(fdSrc, Buffer.from(data), 0, Math.min(len, 65536));
+        let readLen = fs.readSync(fdSrc, data, 0, Math.min(len, 65536));
         if (readLen < 65536) {
             data = data.slice(0, readLen);
         }
@@ -196,7 +196,7 @@ function build(path) {
                 if (data.length > 2) {
                     let addr = data[0];
                     addr += data[1] << 8;
-                    writeProgram(fd, addr, [...data].slice(2));
+                    writeProgram(fd, addr, data.slice(2));
                 } else {
                     alert("Startup program is invalid");
                 }
