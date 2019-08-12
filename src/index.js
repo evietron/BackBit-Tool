@@ -1,4 +1,4 @@
-const VERSION = 0x01000000;
+let version = require('../package').version;
 
 let fs = require('fs');
 
@@ -17,13 +17,14 @@ if (process.versions['nw-flavor'] === 'normal') {
     }
 }
 
-nw.Window.get().on('loaded', function() {
-    nw.Window.get().show();
-})
-
 let $ = function (selector) {
     return document.querySelector(selector);
 }
+
+nw.Window.get().on('loaded', function() {
+    $('.version').innerHTML = "Tool v" + version;
+    nw.Window.get().show();
+})
 
 function shortenPath(path) {
     let i = path.lastIndexOf('/');
@@ -141,7 +142,7 @@ function writeBlock(fd, name, id, data) {
 }
 
 function writeHeader(fd) {
-    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), Buffer.from(stringToBytes('VERSION 1.0.0')));
+    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), Buffer.from(stringToBytes('VERSION ' + version)));
 }
 
 function writeFooter(fd) {
@@ -165,8 +166,7 @@ function renderData(fd) {
     let stats = fs.statSync(pathData);
     let len = stats['size'];
     clearBuffer();
-    bufferAddString('EXTENDED');
-    bufferAddUInt32(len >> 32);
+    bufferAddString('EXTENDEDDATA');
     bufferAddUInt32(len);
     writeBuffer(fd);
 

@@ -1,6 +1,6 @@
 {
   "name": "backbit-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "src/index.html",
   "window": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/evietron/BackBit-Tool#readme",
   "dependencies": {
-    "nw": "^0.39.2",
+    "nw": "^0.39.3",
     "nw-builder": "^3.5.7"
   },
   "devDependencies": {}
