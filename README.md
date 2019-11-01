@@ -15,3 +15,4 @@ TOPICS OF DISCUSSION:
 * Storing cracks as patches to preserve originals
 * Specifying trainers to preserve settings upon use
 * Consistent way of storing high scores
+* VICE emulator support
