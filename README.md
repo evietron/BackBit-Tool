@@ -17,7 +17,7 @@ To discuss working on this tool, go to the forum at http://forum.backbit.io.
 
 The cartridge is available for purchase at http://store.backbit.io.
 
-Comes build with an easy-to-use GUI for Windows (32 & 64-bit), OSX (64-bit), & Linux (32 & 64-bit):
+Comes built with an easy-to-use GUI for Windows (32 & 64-bit), OSX (64-bit), & Linux (32 & 64-bit):
 
 <img src="screenshot.png" width="50%">
 
