@@ -1,3 +1,7 @@
+//
+// Parse and built .BBT files
+//
+
 const version = require('../package').version;
 const fs = require('fs');
 const tmp = require('tmp');
