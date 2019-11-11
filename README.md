@@ -63,8 +63,8 @@ TO DO:
   * Single line (40 cols)
     * Title
     * Copyright (year of release, publisher)
-    * Release Info (media, remastered, trainers, etc.)
-    * Release Type (application/demo/game, genre, similar to)
+    * Version (media, remastered, trainers, etc.)
+    * Category (application/demo/game, genre, similar to)
     * Controller (joystick #, keyboard, paddles, mouse, touchpad)
   * Multi line
     * Release notes
