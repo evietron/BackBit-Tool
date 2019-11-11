@@ -1,12 +1,13 @@
-let version = require('../package').version;
-
-let fs = require('fs');
+const version = require('../package').version;
+const bbt = require('./bbt');
 
 let handlers = {};
-let pathProgram = null;
-let pathsMount = [];
-let pathData = null;
-let buffer = [];
+
+let details = {
+    pathProgram: null,
+    pathsMount: [],
+    pathData: null
+}
 
 // fix mac application menu title in production build
 if (process.versions['nw-flavor'] === 'normal') {
@@ -38,27 +39,27 @@ function shortenPath(path) {
 }
 
 function isEmpty() {
-    return !pathProgram && !pathsMount.length && !pathData;
+    return !details.pathProgram && !details.pathsMount.length && !details.pathData;
 }
 
 function isValid() {
-    return pathProgram || pathsMount.length;
+    return details.pathProgram || details.pathsMount.length;
 }
 
 function updateButtonStates() {
     $('#buttonNew').disabled = isEmpty();
     $('#buttonSaveAs').disabled = !isValid();
-    $('#divAddProgram').style.display = pathProgram ? 'none' : 'flex';
-    $('#buttonRemoveProgram').style.display = pathProgram ? 'flex' : 'none';
-        $('#pathProgram').style.display = pathProgram ? 'flex' : 'none';
-    $('#divAddMount').style.display = (pathsMount.length === 8) ? 'none' : 'flex';
+    $('#divAddProgram').style.display = details.pathProgram ? 'none' : 'flex';
+    $('#buttonRemoveProgram').style.display = details.pathProgram ? 'flex' : 'none';
+        $('#pathProgram').style.display = details.pathProgram ? 'flex' : 'none';
+    $('#divAddMount').style.display = (details.pathsMount.length === 8) ? 'none' : 'flex';
     for (let i = 1; i <= 8; i++) {
         $('#buttonRemoveMount' + i).style.display =
-            $('#pathMount' + i).style.display = (pathsMount.length >= i) ? 'flex' : 'none';
+            $('#pathMount' + i).style.display = (details.pathsMount.length >= i) ? 'flex' : 'none';
     }
-    $('#buttonAddData').style.display = pathData ? 'none' : 'flex';
+    $('#buttonAddData').style.display = details.pathData ? 'none' : 'flex';
     $('#buttonRemoveData').style.display =
-        $('#pathData').style.display = pathData ? 'flex' : 'none';
+        $('#pathData').style.display = details.pathData ? 'flex' : 'none';
 }
 
 function chooseFile(dialog, onSelect) {
@@ -78,195 +79,62 @@ function chooseFile(dialog, onSelect) {
 
 function newFile() {
     if (confirm("This will destroy all changes. Are you sure?")) {
-        pathProgram = null;
-        pathsMount = [];
-        pathData = null;
+        details.pathProgram = null;
+        details.pathsMount = [];
+        details.pathData = null;
         updateButtonStates();
-    }
-}
-
-
-function clearBuffer() {
-    buffer = [];
-}
-
-function stringToBytes(s) {
-    let data = [];
-    for (let i = 0; i < s.length; i++) {
-        data.push(s.charCodeAt(i));
-    }
-    return data;
-}
-
-function stringToUInt32(s) {
-    return (s.charCodeAt(0) << 24) +
-        (s.charCodeAt(1) << 16) +
-        (s.charCodeAt(2) << 8) +
-        s.charCodeAt(3);
-}
-
-function bufferAddString(s) {
-    for (let i = 0; i < s.length; i++) {
-        buffer.push(s.charCodeAt(i));
-    }
-}
-
-function bufferAddUInt32(i) {
-    buffer.push((i >> 24) & 0xff);
-    buffer.push((i >> 16) & 0xff);
-    buffer.push((i >> 8) & 0xff);
-    buffer.push(i & 0xff);
-}
-
-function writeBuffer(fd, data) {
-    fs.writeSync(fd, data ? data : Buffer.from(buffer));
-}
-
-function writePaddedBuffer(fd, data) {
-    writeBuffer(fd, data);
-    let byteOffset = data.length % 16;
-    if (byteOffset > 0) {
-        writeBuffer(fd, Buffer.alloc(16 - byteOffset, 0));
-    }
-}
-
-function writeBlock(fd, name, id, data) {
-    clearBuffer();
-    bufferAddString(name);
-    bufferAddUInt32(id);
-    bufferAddUInt32(data ? data.length : 0);
-    writeBuffer(fd);
-    if (data) {
-        writePaddedBuffer(fd, data);
-    }
-}
-
-function writeHeader(fd) {
-    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), Buffer.from(stringToBytes('VERSION ' + version)));
-}
-
-function writeFooter(fd) {
-    writeBlock(fd, 'BACKBITS', stringToUInt32('BACK'));
-}
-
-function writeProgram(fd, addr, data) {
-    let i = addr << 16;
-    let endAddr = addr + data.length - 1;
-    if (endAddr < 65536) {
-        i += endAddr;
-    }
-    writeBlock(fd, 'STARTPRG', i, data);
-}
-
-function writeMount(fd, ext, device, data) {
-    writeBlock(fd, 'MOUNT' + ext, device, data);
-}
-
-function renderData(fd) {
-    let stats = fs.statSync(pathData);
-    let len = stats['size'];
-    clearBuffer();
-    bufferAddString('EXTENDEDDATA');
-    bufferAddUInt32(len);
-    writeBuffer(fd);
-
-    let fdSrc = fs.openSync(pathData);
-    let data = Buffer.alloc(65536, 0);
-    while (len > 0) {
-        let readLen = fs.readSync(fdSrc, data, 0, Math.min(len, 65536));
-        if (readLen < 65536) {
-            data = data.slice(0, readLen);
-        }
-        writePaddedBuffer(fd, data);
-        len -= readLen;
-    }
-}
-
-function build(path) {
-    if (!path.toLowerCase().endsWith('.bbt')) {
-        path += '.bbt';
-    }
-
-    try {
-        let fd = fs.openSync(path, 'w');
-        if (fd) {
-            writeHeader(fd);
-            if (pathProgram) {
-                let data = fs.readFileSync(pathProgram);
-                if (data.length > 2) {
-                    let addr = data[0];
-                    addr += data[1] << 8;
-                    writeProgram(fd, addr, data.slice(2));
-                } else {
-                    alert("Startup program is invalid");
-                }
-            }
-            for (let i = 0; i < pathsMount.length; i++) {
-                let data = fs.readFileSync(pathsMount[i]);
-                writeMount(fd, pathsMount[i].slice(pathsMount[i].length - 3).toUpperCase(), 8 + i, data);
-            }
-            if (pathData) {
-                renderData(fd);
-            }
-            writeFooter(fd);
-            fs.closeSync(fd);
-        } else {
-            alert("Can't open " + path);
-        }
-    } catch (e) {
-        alert("ERROR: " + e);
     }
 }
 
 function saveAsFile() {
     chooseFile('#bbtFileDialog', function(path) {
-        build(path);
+       bbt.build(path, details);
     });
 }
 
 function addProgram() {
     chooseFile('#prgFileDialog', function(path) {
-        pathProgram = path;
-        $('#pathProgram').innerHTML = shortenPath(pathProgram);
+        details.pathProgram = path;
+        $('#pathProgram').innerHTML = shortenPath(details.pathProgram);
         updateButtonStates();
     });
 }
 
 function removeProgram() {
-    pathProgram = null;
+    details.pathProgram = null;
     updateButtonStates();
 }
 
 function updateMounts() {
-    for (let i = 0; i < pathsMount.length; i++) {
-        $('#pathMount' + (i + 1)).innerHTML = (8 + i) + ': ' + shortenPath(pathsMount[i]);
+    for (let i = 0; i < details.pathsMount.length; i++) {
+        $('#pathMount' + (i + 1)).innerHTML = (8 + i) + ': ' + shortenPath(details.pathsMount[i]);
     }
 }
 
 function addMount() {
     chooseFile('#d64FileDialog', function(path) {
-        pathsMount.push(path);
+        details.pathsMount.push(path);
         updateMounts();
         updateButtonStates();
     });
 }
 
 function removeMount(index) {
-    pathsMount.splice(index, 1);
+    details.pathsMount.splice(index, 1);
     updateMounts();
     updateButtonStates();
 }
 
 function addData() {
     chooseFile('#binFileDialog', function(path) {
-        pathData = path;
-        $('#pathData').innerHTML = shortenPath(pathData);
+        details.pathData = path;
+        $('#pathData').innerHTML = shortenPath(details.pathData);
         updateButtonStates();
     });
 }
 
 function removeData() {
-    pathData = null;
+    details.pathData = null;
     updateButtonStates();
 }
 
