@@ -1,6 +1,8 @@
 # BackBit-Tool
 
-The BackBit Tool is a cross-platform JavaScript application that creates .BBT files
+The BackBit Tool is a cross-platform JavaScript application that creates .BBT files.
+
+For the latest compiled build, find it at http://backbit.io/downloads/Tool/.
 
 ![Screenshot](screenshot.png)
 
