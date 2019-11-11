@@ -1,3 +1,7 @@
+//
+// This is the main code for the NW.js application (gets loaded by the index.html)
+//
+
 const version = require('../package').version;
 const bbt = require('./bbt');
 const fileref = require('./fileref');
