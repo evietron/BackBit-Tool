@@ -7,8 +7,60 @@ const fs = require('fs');
 const tmp = require('tmp');
 const fileref = require('./fileref');
 
+//
+// Anatomy of a BBT file
+//
+
+// Requirements
+// - the file size is always divisible by 16 bytes
+// - it is composed of chunks with 16 byte headers
+// - each header starts at an offset divisible by 16 bytes
+// - chunks are padded to be a length divisble by 16 bytes
+// - padding is always zeroes
+// - there is always a starting and ending chunk
+// - all #'s are big-endian to be human readable in a hex editor
+
+// The header for a chunk is always 16 bytes:
+// - [8-char type id] [4-byte parameter] [4-byte content length]
+// - note that content length does not include the length of the header
 const HEADER_LEN = 16;
+
+// For easy readability in a hex editor, all fields are padded to 16 byte offsets
 const PADDING_OFFSET = 16;
+
+//
+// Chunk types
+//
+
+// Starting chunk
+// - type id: "BACKBIT " (ends with a space)
+// - parameter: "C64 " (refers to system file is intended for, only C64 for now)
+// - content is the version name, i.e. "VERSION X.X.X"
+
+// Autostart program
+// - type id: "STARTPRG"
+// - parameter: 16-bit start address, followed by 16-bit end address (inclusive, i.e. last byte used)
+// - content is program data, excluding 2-byte start address for a PRG since it is already included
+
+// Mounted cartridge
+// - type id: "MOUNTCRT"
+// - parameter: 32-bit length of physical cartridge size (i.e. 8K would be 8192)
+// - content is a CRT file
+
+// Mounted disk image
+// - type id: "MOUNTD64" / "MOUNTD71" / "MOUNTD81"
+// - parameter: the device # (typically 8-15)
+// - content is a D64/D71/D81 file
+
+// Extended data chunk
+// - type id: "EXTENDED"
+// - parmeter: "DATA" (does not vary)
+// - content is user-defined binary data
+
+// Ending chunk
+// - type id: "BACKBITS"
+// - parmeter: "BACK" (does not vary)
+
 let buffer = [];
 
 function clearBuffer() {
