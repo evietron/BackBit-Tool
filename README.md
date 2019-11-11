@@ -56,7 +56,7 @@ To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
 
 TO DO:
-* Support CRT as autostart
+* Support CRT/P00/T64 as autostart
 * Add SID file
 * Add KLA file(s)
 * Add text field support
