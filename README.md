@@ -15,19 +15,19 @@ You must install node & npm:
 https://nodejs.org/en/download/
 
 To setup for development (first time only):
-* npm run dev
+* `npm run dev`
 
 To execute in DEBUG mode:
-* npm start
+* `npm start`
 
-To compile PRODUCTION builds (outputs to the build folder):
-* npm run deploy
+To compile PRODUCTION builds (outputs to the **build** folder):
+* `npm run deploy`
 
 To execute PRODUCTION build (Mac OSX only for now):
-* npm run prod
+* `npm run prod`
 
 To install PRODUCTION build in your Applications folder (Mac OSX only for now):
-* npm run install
+* `npm run install`
 
 TO DO:
 * Create a commandline version
