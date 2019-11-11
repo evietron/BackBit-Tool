@@ -20,7 +20,7 @@ To setup for development (first time only):
 To execute in DEBUG mode:
 * npm start
 
-To compile PRODUCTION builds:
+To compile PRODUCTION builds (outputs to the build folder):
 * npm run deploy
 
 To execute PRODUCTION build (Mac OSX only for now):
