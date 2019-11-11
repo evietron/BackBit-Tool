@@ -2,6 +2,8 @@
 
 The BackBit Tool is a cross-platform JavaScript application that creates .BBT files
 
+![Screenshot](screenshot.png)
+
 The BBT file format is useful for developing applications for the BackBit Commodore 64 cartridge that can mount multiple disks 
 and can attach a large amount of binary data (up to 4GB).
 
