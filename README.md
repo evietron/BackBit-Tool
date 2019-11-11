@@ -43,7 +43,6 @@ To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
 
 TO DO:
-* Create a commandline version
 * Add support for specifying Koala title screens w/ SID music
 * Add support for manuals/instructions
 * Add support for screenshots
