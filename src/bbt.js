@@ -1,5 +1,5 @@
 //
-// Parse and built .BBT files
+// Parse and build .BBT files
 //
 
 const version = require('../package').version;
