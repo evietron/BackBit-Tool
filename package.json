@@ -31,7 +31,8 @@
   "homepage": "https://github.com/evietron/BackBit-Tool#readme",
   "dependencies": {
     "nw": "^0.39.3",
-    "nw-builder": "^3.5.7"
+    "nw-builder": "^3.5.7",
+    "tmp": "^0.1.0"
   },
   "devDependencies": {}
 }

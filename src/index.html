@@ -6,7 +6,8 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     </head>
   <body>
-    <input style="display:none" id="bbtFileDialog" type="file" nwsaveas="Untitled.bbt" />
+    <input style="display:none" id="saveFileDialog" type="file" nwsaveas="Untitled.bbt" />
+    <input style="display:none" id="bbtFileDialog" type="file" accept=".bbt" />
     <input style="display:none" id="prgFileDialog" type="file" accept=".prg" />
     <input style="display:none" id="d64FileDialog" type="file" accept=".d64,.d71,.d81" />
     <input style="display:none" id="binFileDialog" type="file" />
@@ -17,6 +18,7 @@
         <table><tr><td><img src="logo.png" width="100%"></td></tr></table>
         <table width="100%"><tr><td class="blurb">The BackBit Tool assembles <span class="spec">.BBT</span> files out of existing program, disk and binary resources.</td><td class="version"></td></tr></table>
         <button id="buttonNew">New</button>
+        <button id="buttonOpen">Open...</button>
         <button id="buttonSaveAs">Save As...</button>
         <div class="level">LEVEL I: Startup Program</div>
         <div class="blurb">Not required, but if not present then a mounted disk must be present.</div>
