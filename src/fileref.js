@@ -9,7 +9,7 @@ function generate(path, offset = 0, bytes = -1) {
 }
 
 function read(ref) {
-    let fd = fs.openSync(ref.path);
+    let fd = fs.openSync(ref.path, "r");
 
     let stats = fs.statSync(ref.path);
     let len = stats['size'];

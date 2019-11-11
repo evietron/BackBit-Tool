@@ -1,6 +1,7 @@
 const version = require('../package').version;
 const bbt = require('./bbt');
 const fileref = require('./fileref');
+const fs = require('fs');
 
 let handlers = {};
 
@@ -96,14 +97,31 @@ function newFile() {
 
 function saveAsFile() {
     chooseFile('#saveFileDialog', function(path) {
-       bbt.build(path, details);
+        try {
+            if (!path.toLowerCase().endsWith('.bbt')) {
+                path += '.bbt';
+            }
+            let ok = true;
+            if (fs.existsSync(path)) {
+                ok = confirm("REALLY overwrite " + path + "?");
+            }
+            if (ok) {
+                bbt.build(path, details);
+            }
+        } catch (e) {
+            alert(e.toString());
+        }
     });
 }
 
 function openFile() {
     if (isEmpty() || confirmOverwrite()) {
         chooseFile('#bbtFileDialog', function(path) {
-            details = bbt.parse(path);
+            try {
+                details = bbt.parse(path);
+            } catch (e) {
+                alert(e.toString());
+            }
             updateRefs();
             updateButtonStates();
         });

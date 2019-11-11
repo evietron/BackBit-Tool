@@ -107,12 +107,12 @@ function writeMount(fd, device, data) {
     let ext = null;
     if (data.length === 174848 || data.length === 175531) {
         ext = "D64";
-    }
-    if (data.length === 349696 || data.length === 351062) {
+    } else if (data.length === 349696 || data.length === 351062) {
         ext = "D71";
-    }
-    if (data.length === 819200 || data.length === 822400) {
+    } else if (data.length === 819200 || data.length === 822400) {
         ext = "D81";
+    } else {
+        throw "Invalid disk image";
     }
     writeBlock(fd, 'MOUNT' + ext, device, data);
     return ext;
@@ -134,7 +134,7 @@ function renderData(fd, data) {
         writeBuffer(fd);
     }
 
-    let fdSrc = fs.openSync(data.path);
+    let fdSrc = fs.openSync(data.path, "r");
     let pos = data.offset;
     let chunk = Buffer.alloc(65536);
     while (len > 0) {
@@ -149,48 +149,40 @@ function renderData(fd, data) {
 }
 
 function build(path, details) {
-    if (!path.toLowerCase().endsWith('.bbt')) {
-        path += '.bbt';
-    }
-
-    try {
-        let out = tmp.fileSync();
-        let fd = out.fd;
-        if (fd) {
-            writeHeader(fd);
-            if (details.program) {
-                let data = fileref.read(details.program);
-                if (details.program.offset) {
-                    // pre-rendered
-                    writeBuffer(fd, data);
-                } else if (data.length > 2) {
-                    let addr = data[0];
-                    addr += data[1] << 8;
-                    writeProgram(fd, addr, data.slice(2));
-                } else {
-                    alert("Startup program is invalid");
-                }
+    let out = tmp.fileSync();
+    let fd = out.fd;
+    if (fd) {
+        writeHeader(fd);
+        if (details.program) {
+            let data = fileref.read(details.program);
+            if (details.program.offset) {
+                // pre-rendered
+                writeBuffer(fd, data);
+            } else if (data.length > 2) {
+                let addr = data[0];
+                addr += data[1] << 8;
+                writeProgram(fd, addr, data.slice(2));
+            } else {
+                throw "Startup program is invalid";
             }
-            for (let i = 0; i < details.mounts.length; i++) {
-                let data = fileref.read(details.mounts[i]);
-                if (details.mounts[i].offset) {
-                    // pre-rendered
-                    writeBuffer(fd, data);
-                } else if (!writeMount(fd, 8 + i, data)) {
-                    alert("Invalid disk image size");
-                }
-            }
-            if (details.data) {
-                renderData(fd, details.data);
-            }
-            writeFooter(fd);
-            fs.closeSync(fd);
-            fs.renameSync(out.name, path);
-        } else {
-            alert("Can't create " + path);
         }
-    } catch (e) {
-        alert("ERROR: " + e);
+        for (let i = 0; i < details.mounts.length; i++) {
+            let data = fileref.read(details.mounts[i]);
+            if (details.mounts[i].offset) {
+                // pre-rendered
+                writeBuffer(fd, data);
+            } else if (!writeMount(fd, 8 + i, data)) {
+                throw "Invalid disk image size";
+            }
+        }
+        if (details.data) {
+            renderData(fd, details.data);
+        }
+        writeFooter(fd);
+        fs.closeSync(fd);
+        fs.renameSync(out.name, path);
+    } else {
+        throw "Can't create " + path;
     }
 }
 
@@ -202,12 +194,12 @@ function parse(path) {
     }
 
     if (path) {
-        let fd = fs.openSync(path);
+        let fd = fs.openSync(path, "r");
         let offset = 0;
         let block = readBlockInfo(path, fd, 0);
         let footer = false;
         if (block.name !== "BACKBIT ") {
-            alert("Invalid BBT header");
+            throw "Invalid BBT header";
             return;
         }
         offset = block.nextOffset;
@@ -230,9 +222,9 @@ function parse(path) {
                     break;
                 default:
                     if (block.name) {
-                        alert("Invalid field: " + block.name);
+                        throw "Invalid field: " + block.name;
                     } else {
-                        alert("Invalid BBT file");
+                        throw "Invalid BBT file";
                     }
                     return;
             }
