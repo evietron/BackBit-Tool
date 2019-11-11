@@ -1,15 +1,23 @@
 # BackBit-Tool
 
-The BackBit Tool is a cross-platform JavaScript application that creates .BBT files.
+The BackBit Tool is a fully open source cross-platform JavaScript application that creates .BBT files for use with the BackBit cartridge for Commodore 64.
+
+The BBT file format offers the following innovations:
+* Prepend SID music and title screen/screenshots
+* Autostarts to any program
+* Incorporates up to 8 disk images (D64/D71/D81)
+* Supports up to 4 gigabytes of binary data
+* Tags important details about the program, including text and screenshots
+
+While this format is designed to integrate with the BackBit cartridge, it is likely that emulators will eventually support this format once there is enough demand.
 
 For the latest compiled build, find it at http://backbit.io/downloads/Tool/.
 
 To discuss working on this tool, go to the forum at http://forum.backbit.io.
 
-<img src="screenshot.png" width="50%">
+The cartridge is available for purchase at http://store.backbit.io.
 
-The BBT file format is useful for developing applications for the BackBit Commodore 64 cartridge that can mount multiple disks 
-and can attach a large amount of binary data (up to 4GB).
+<img src="screenshot.png" width="50%">
 
 This is a NW.js app which means it is a JavaScript application that runs in a browser framework, appearing as an executable on Windows, Mac OSX, or Linux machines. This is great for compatibility, and builds on the Node.js infrastructure.
 
