@@ -1,3 +1,7 @@
+//
+// Command-Line Implementation for BackBit Tool
+//
+
 const version = require('../package').version;
 const bbt = require('./bbt');
 const fileref = require('./fileref');
