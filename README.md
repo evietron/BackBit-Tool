@@ -17,7 +17,18 @@ To discuss working on this tool, go to the forum at http://forum.backbit.io.
 
 The cartridge is available for purchase at http://store.backbit.io.
 
+Comes build with an easy-to-use GUI for Windows (32 & 64-bit), OSX (64-bit), & Linux (32 & 64-bit):
+
 <img src="screenshot.png" width="50%">
+
+Also usable with a command-line interface:
+
+```
+BackBitTool 1.1.0
+Usage: BackBitTool <output.bbt> <input files...>
+Supported input files include: PRG,D64,D71,D81,SID,KLA
+Use any unsupported extension to add extended data
+```
 
 This is a NW.js app which means it is a JavaScript application that runs in a browser framework, appearing as an executable on Windows, Mac OSX, or Linux machines. This is great for compatibility, and builds on the Node.js infrastructure.
 
