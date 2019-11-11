@@ -56,9 +56,12 @@ To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
 
 TO DO:
-* Support CRT/P00/T64 as autostart
-* Add SID file
-* Add KLA file(s)
+* Support mounting CRT
+* Automatically convert P00 & T64 for start PRG
+* Support SID file
+* Support multiple screenshot files, starting with KLA but with variable extension
+* Automatically convert PNG/JPG to multicolor 160x200 KLA
+* Automatically generate 80x100 thumbnails
 * Add text field support
   * Single line (40 cols)
     * Title
