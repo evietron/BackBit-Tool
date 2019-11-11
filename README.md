@@ -62,9 +62,9 @@ TO DO:
 * Add text field support
   * Single line (40 cols)
     * Title
-    * Release Info (media, remastered, trainers, etc.)
     * Copyright (year of release, publisher)
-    * Genre (application/demo/game, type of game)
+    * Release Info (media, remastered, trainers, etc.)
+    * Release Type (application/demo/game, genre, similar to)
     * Controller (joystick #, keyboard, paddles, mouse, touchpad)
   * Multi line
     * Release notes
