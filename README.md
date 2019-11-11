@@ -4,7 +4,7 @@ The BackBit Tool is a cross-platform JavaScript application that creates .BBT fi
 
 For the latest compiled build, find it at http://backbit.io/downloads/Tool/.
 
-To discuss working on this tool, go to the forum at http://forum.backbit.io
+To discuss working on this tool, go to the forum at http://forum.backbit.io.
 
 <img src="screenshot.png" width="50%">
 
