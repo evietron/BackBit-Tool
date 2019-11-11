@@ -30,9 +30,11 @@ Supported input files include: PRG,D64,D71,D81,SID,KLA
 Use any unsupported extension to add extended data
 ```
 
+## Build instructions
+
 This is a NW.js app which means it is a JavaScript application that runs in a browser framework, appearing as an executable on Windows, Mac OSX, or Linux machines. This is great for compatibility, and builds on the Node.js infrastructure.
 
-You must install node & npm:
+You must install node & npm to build on your machine:
 https://nodejs.org/en/download/
 
 To setup for development (first time only):
