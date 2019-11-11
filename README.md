@@ -56,13 +56,16 @@ To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
 
 TO DO:
-* Add support for specifying Koala title screens w/ SID music
-* Add support for manuals/instructions
-* Add support for screenshots
-* Add identifying information, like contributors, publisher, year of release, etc.
-
-TOPICS OF DISCUSSION:
-* Storing cracks as patches to preserve originals
-* Specifying trainers to preserve settings upon use
-* Consistent way of storing high scores
-* VICE emulator support
+* Support CRT as autostart
+* Add SID file
+* Add KLA file(s)
+* Add text field support
+  * Single line (40 cols)
+    * Title
+    * Release Info (media, remastered, trainers, etc.)
+    * Copyright (year of release, publisher)
+    * Genre (application/demo/game, type of game)
+    * Controller (joystick #, keyboard, paddles, mouse, touchpad)
+  * Multi line
+    * Release notes
+    * Instructions
