@@ -39,6 +39,9 @@ To execute PRODUCTION build (Mac OSX only for now):
 To install PRODUCTION build in your Applications folder (Mac OSX only for now):
 * `npm run install`
 
+To run COMMAND-LINE version:
+* `node src/cmd.js <params>`
+
 TO DO:
 * Create a commandline version
 * Add support for specifying Koala title screens w/ SID music
