@@ -57,6 +57,16 @@ const PADDING_OFFSET = 16;
 // - parmeter: "DATA" (does not vary)
 // - content is user-defined binary data
 
+// Intro Music
+// - type id: "INTROSID"
+// - parameter: song # for SID (0 = default)
+// - content is SID file
+
+// Intro Graphics
+// - type id: "INTROKLA"
+// - parameter: # of seconds to display (0 = default)
+// - content is KLA file
+
 // Ending chunk
 // - type id: "BACKBITS"
 // - parmeter: "BACK" (does not vary)
@@ -150,35 +160,60 @@ function writeFooter(fd) {
     writeBlock(fd, 'BACKBITS', stringToUInt32('BACK'));
 }
 
-function writeProgram(fd, addr, data) {
-    let i = addr << 16;
-    let endAddr = addr + data.length - 1;
-    if (endAddr < 65536) {
-        i += endAddr;
-    }
-    writeBlock(fd, 'STARTPRG', i, data);
-}
-
-function writeCart(fd, size, data) {
-    writeBlock(fd, 'MOUNTCRT', size, data);
-}
-
-function writeMount(fd, device, data) {
-    let ext = null;
-    if (data.length === 174848 || data.length === 175531) {
-        ext = "D64";
-    } else if (data.length === 349696 || data.length === 351062) {
-        ext = "D71";
-    } else if (data.length === 819200 || data.length === 822400) {
-        ext = "D81";
+function writeProgram(fd, program) {
+    let data = fileref.read(program);
+    if (program.offset) {
+        // pre-rendered
+        writeBuffer(fd, data);
+    } else if (data.length > 2) {
+        let addr = data[0];
+        addr += data[1] << 8;
+        
+        let i = addr << 16;
+        let endAddr = addr + data.length - 3;
+        if (endAddr < 65536) {
+            i += endAddr;
+        }
+        writeBlock(fd, 'STARTPRG', i, data.slice(2));
     } else {
-        throw "Invalid disk image";
+        throw "Startup program is invalid";
     }
-    writeBlock(fd, 'MOUNT' + ext, device, data);
-    return ext;
 }
 
-function renderData(fd, data) {
+function writeCart(fd, cart) {
+    let data = fileref.read(cart);
+    if (cart.offset) {
+        // pre-rendered
+        writeBuffer(fd, data);
+    } else if (data.length >= 8192) {
+        let size = Math.floor(data.length / 8192) * 8192;
+        writeBlock(fd, 'MOUNTCRT', size, data);
+    } else {
+        throw "Cartridge is invalid";
+    }
+}
+
+function writeMount(fd, mount) {
+    let data = fileref.read(mount);
+    if (mount.offset) {
+        // pre-rendered
+        writeBuffer(fd, data);
+    } else {
+        let ext = null;
+        if (data.length === 174848 || data.length === 175531) {
+            ext = "D64";
+        } else if (data.length === 349696 || data.length === 351062) {
+            ext = "D71";
+        } else if (data.length === 819200 || data.length === 822400) {
+            ext = "D81";
+        } else {
+            throw "Invalid disk image";
+        }
+        writeBlock(fd, 'MOUNT' + ext, 8 + i, data);
+    }
+}
+
+function writeData(fd, data) {
     let len = data.bytes;
     if (len === -1) {
         let stats = fs.statSync(data.path);
@@ -208,52 +243,51 @@ function renderData(fd, data) {
     }
 }
 
+function writeMusic(fd, music) {
+    let data = fileref.read(music);
+    if (music.offset) {
+        // pre-rendered
+        writeBuffer(fd, data);
+    } else {
+        writeBlock(fd, 'INTROSID', 0, data);
+    }
+}
+
+function writeImage(fd, intro) {
+    let data = fileref.read(intro);
+    if (intro.offset) {
+        // pre-rendered
+        writeBuffer(fd, data);
+    } else {
+        writeBlock(fd, 'INTROKLA', 0, data);
+    }
+}
+
 function build(path, details) {
     let out = tmp.fileSync();
     let fd = out.fd;
 
-    if (details.cart && (details.program || details.mounts.length)) {
-        throw "Can't combine autostart program or disks with a cartridge";
+    if (details.cart && (details.program || details.mounts.length || details.data)) {
+        throw "Can't combine a cartridge with a program or data";
     }
 
     if (fd) {
         writeHeader(fd);
         if (details.program) {
-            let data = fileref.read(details.program);
-            if (details.program.offset) {
-                // pre-rendered
-                writeBuffer(fd, data);
-            } else if (data.length > 2) {
-                let addr = data[0];
-                addr += data[1] << 8;
-                writeProgram(fd, addr, data.slice(2));
-            } else {
-                throw "Startup program is invalid";
-            }
+            writeProgram(fd, details.program);
         }
         if (details.cart) {
-            let data = fileref.read(details.cart);
-            if (details.cart.offset) {
-                // pre-rendered
-                writeBuffer(fd, data);
-            } else if (data.length >= 8192) {
-                let size = Math.floor(data.length / 8192) * 8192;
-                writeCart(fd, size, data);
-            } else {
-                throw "Cartridge is invalid";
-            }
+            writeCart(fd, details.cart);
         }
         for (let i = 0; i < details.mounts.length; i++) {
-            let data = fileref.read(details.mounts[i]);
-            if (details.mounts[i].offset) {
-                // pre-rendered
-                writeBuffer(fd, data);
-            } else if (!writeMount(fd, 8 + i, data)) {
-                throw "Invalid disk image size";
-            }
+            writeMount(fd, details.mounts[i]);
         }
         if (details.data) {
-            renderData(fd, details.data);
+            writeData(fd, details.data);
+        }
+        writeMusic(fd, details.music);
+        for (let i = 0; i < details.images.length; i++) {
+            writeImage(fd, details.images[i]);
         }
         writeFooter(fd);
         fs.closeSync(fd);
@@ -268,7 +302,9 @@ function parse(path) {
         program: null,
         cart: null,
         mounts: [],
-        data: null
+        data: null,
+        music: null,
+        images: []
     }
 
     if (path) {
@@ -297,6 +333,12 @@ function parse(path) {
                     break;
                 case "EXTENDED":
                     details.data = block.ref;
+                    break;
+                case "INTROSID":
+                    details.music = block.ref;
+                    break;
+                case "INTROKLA":
+                    details.images.push(block.ref);
                     break;
                 case "BACKBITS":
                     footer = true;

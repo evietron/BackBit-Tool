@@ -5,9 +5,8 @@
   "main": "src/index.html",
   "window": {
     "title": "BackBit Tool",
-    "min_width": 790,
-    "max_width": 790,
-    "min_height": 550,
+    "min_width": 1000,
+    "min_height": 750,
     "icon": "icon.png",
     "show": false
   },

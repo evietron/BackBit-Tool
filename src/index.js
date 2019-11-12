@@ -48,7 +48,8 @@ function shortenPath(ref) {
 }
 
 function isEmpty() {
-    return !details.program && !details.cart && !details.mounts.length && !details.data;
+    return !details.program && !details.cart && !details.mounts.length &&
+        !details.data && !details.music && !details.images.length;
 }
 
 function isValid() {
@@ -69,6 +70,14 @@ function updateButtonStates() {
     $('#buttonAddData').style.display = details.data ? 'none' : 'flex';
     $('#buttonRemoveData').style.display =
         $('#pathData').style.display = details.data ? 'flex' : 'none';
+    $('#divAddMusic').style.display = details.music ? 'none' : 'flex';
+    $('#buttonRemoveMusic').style.display = details.music ? 'flex' : 'none';
+    $('#pathMusic').style.display = details.music ? 'flex' : 'none';
+    $('#divAddImage').style.display = (details.images.length === 10) ? 'none' : 'flex';
+    for (let i = 1; i <= 10; i++) {
+        $('#buttonRemoveImage' + i).style.display =
+            $('#pathImage' + i).style.display = (details.images.length >= i) ? 'flex' : 'none';
+    }
 }
 
 function chooseFile(dialog, onSelect) {
@@ -92,10 +101,7 @@ function confirmOverwrite() {
 
 function newFile() {
     if (confirmOverwrite()) {
-        details.program = null;
-        details.cart = null;
-        details.mounts = [];
-        details.data = null;
+        details = bbt.parse();
         updateButtonStates();
     }
 }
@@ -153,12 +159,33 @@ function removeProgram() {
     updateButtonStates();
 }
 
+function addMusic() {
+    chooseFile('#sidFileDialog', function(path) {
+        if (path.toLowerCase().endsWith('.sid')) {
+            details.music = fileref.generate(path);
+        } else {
+            alert("Invalid file format");
+        }
+        updateRefs();
+        updateButtonStates();
+    });
+}
+
+function removeMusic() {
+    details.music = null;
+    updateButtonStates();
+}
+
 function updateRefs() {
     $('#pathProgram').innerHTML = shortenPath(details.program || details.cart);
     for (let i = 0; i < details.mounts.length; i++) {
         $('#pathMount' + (i + 1)).innerHTML = (8 + i) + ': ' + shortenPath(details.mounts[i]);
     }
     $('#pathData').innerHTML = shortenPath(details.data);
+    $('#pathMusic').innerHTML = shortenPath(details.music);
+    for (let i = 0; i < details.images.length; i++) {
+        $('#pathImage' + (i + 1)).innerHTML = shortenPath(details.images[i]);
+    }
 }
 
 function addMount() {
@@ -171,6 +198,20 @@ function addMount() {
 
 function removeMount(index) {
     details.mounts.splice(index, 1);
+    updateRefs();
+    updateButtonStates();
+}
+
+function addImage() {
+    chooseFile('#klaFileDialog', function(path) {
+        details.images.push(fileref.generate(path));
+        updateRefs();
+        updateButtonStates();
+    });
+}
+
+function removeImage(index) {
+    details.images.splice(index, 1);
     updateRefs();
     updateButtonStates();
 }
@@ -194,6 +235,12 @@ function setupRemoveMount(index) {
     };
 }
 
+function setupRemoveImage(index) {
+    return () => {
+        return removeImage(index);
+    };
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     $('#buttonNew').addEventListener('click', newFile);
     $('#buttonOpen').addEventListener('click', openFile);
@@ -211,5 +258,18 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#buttonRemoveMount8').addEventListener('click', setupRemoveMount(7));
     $('#buttonAddData').addEventListener('click', addData);
     $('#buttonRemoveData').addEventListener('click', removeData);
+    $('#buttonAddMusic').addEventListener('click', addMusic);
+    $('#buttonRemoveMusic').addEventListener('click', removeMusic);
+    $('#buttonAddImage').addEventListener('click', addImage);
+    $('#buttonRemoveImage1').addEventListener('click', setupRemoveImage(0));
+    $('#buttonRemoveImage2').addEventListener('click', setupRemoveImage(1));
+    $('#buttonRemoveImage3').addEventListener('click', setupRemoveImage(2));
+    $('#buttonRemoveImage4').addEventListener('click', setupRemoveImage(3));
+    $('#buttonRemoveImage5').addEventListener('click', setupRemoveImage(4));
+    $('#buttonRemoveImage6').addEventListener('click', setupRemoveImage(5));
+    $('#buttonRemoveImage7').addEventListener('click', setupRemoveImage(6));
+    $('#buttonRemoveImage8').addEventListener('click', setupRemoveImage(7));
+    $('#buttonRemoveImage9').addEventListener('click', setupRemoveImage(8));
+    $('#buttonRemoveImage10').addEventListener('click', setupRemoveImage(9));
     updateButtonStates();
 });

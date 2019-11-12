@@ -10,65 +10,73 @@
     <input style="display:none" id="bbtFileDialog" type="file" accept=".bbt" />
     <input style="display:none" id="prgFileDialog" type="file" accept=".prg,.crt" />
     <input style="display:none" id="d64FileDialog" type="file" accept=".d64,.d71,.d81" />
+    <input style="display:none" id="sidFileDialog" type="file" accept=".sid" />
+    <input style="display:none" id="klaFileDialog" type="file" accept=".kla,.koa" />
     <input style="display:none" id="binFileDialog" type="file" />
     <header></header>
     <div class="main">
       <aside class="left"></aside>
       <main class="mid">
-        <table><tr><td><img src="logo.png" width="100%"></td></tr></table>
-        <table width="100%"><tr><td class="blurb">The BackBit Tool assembles <span class="spec">.BBT</span> files out of existing program, disk and binary resources.</td><td class="version"></td></tr></table>
+        <table><tr><td width="500px"><img src="logo.png" width="100%"></td><td></td><td class="version"></td></tr></table>
+        <table width="100%"><tr><td class="blurb">The BackBit Tool assembles <span class="spec">.BBT</span> files out of existing program, disk and binary resources.</td></tr></table>
         <button id="buttonNew">New</button>
         <button id="buttonOpen">Open...</button>
         <button id="buttonSaveAs">Save As...</button>
-        <div class="level">LEVEL I: Startup Program or Cartridge</div>
-        <div class="blurb">Not required, but if not present then a mounted disk must be present.</div>
-        <div class="row">
-          <div class="item" id="pathProgram"></div>
-          <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG *.CRT</div></div>
-          <div class="close"><button id="buttonRemoveProgram">X</button></div>
-        </div>
-        <div class="level">LEVEL II: Mounted Disks</div>
-        <div class="blurb">Can mount up to 8 disks. If no startup program is present, the program will be started with <strong>LOAD "*",8,1</strong>.</div>
-        <div class="row">
-          <div class="item" id="pathMount1"></div>
-          <div class="close"><button id="buttonRemoveMount1">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount2"></div>
-          <div class="close"><button id="buttonRemoveMount2">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount3"></div>
-          <div class="close"><button id="buttonRemoveMount3">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount4"></div>
-          <div class="close"><button id="buttonRemoveMount4">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount5"></div>
-          <div class="close"><button id="buttonRemoveMount5">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount6"></div>
-          <div class="close"><button id="buttonRemoveMount6">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount7"></div>
-          <div class="close"><button id="buttonRemoveMount7">X</button></div>
-        </div>
-        <div class="row">
-          <div class="item" id="pathMount8"></div>
-          <div class="close"><button id="buttonRemoveMount8">X</button></div>
-        </div>
-        <div id="divAddMount"><button id="buttonAddMount">+</button><div class="flag">*.D64 *.D71 *.D81</div></div>
-        <div class="level">LEVEL III: Extended Data</div>
-        <div class="blurb">Optional. Add raw binary data, accessible in 64K chunks. Total BBT file size must be under 4GB.</div>
-        <div class="row">
-          <div class="item" id="pathData"></div>
-          <button id="buttonAddData">+</button>
-          <div class="close"><button id="buttonRemoveData">X</button></div>
-        </div>
+        <table width="100%"><tr>
+          <td width="50%" class="column-l">
+            <div class="col-header">Content</div>
+            <div class="level">LEVEL I: Startup Program or Cartridge</div>
+            <div class="blurb">Not required, but if not present then a mounted disk must be present.</div>
+            <div class="row">
+              <div class="item" id="pathProgram"></div>
+              <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG *.CRT</div></div>
+              <button id="buttonRemoveProgram" class="close">X</button>
+            </div>
+            <div class="level">LEVEL II: Mounted Disks</div>
+            <div class="blurb">Can mount up to 8 disks. If no startup program is present, the program will be started with <strong>LOAD "*",8,1</strong>.</div>
+            <div class="row">
+              <span class="item-span"><div class="item" id="pathMount1"></div><button id="buttonRemoveMount1" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount2"></div><button id="buttonRemoveMount2" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount3"></div><button id="buttonRemoveMount3" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount4"></div><button id="buttonRemoveMount4" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount5"></div><button id="buttonRemoveMount5" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount6"></div><button id="buttonRemoveMount6" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount7"></div><button id="buttonRemoveMount7" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathMount8"></div><button id="buttonRemoveMount8" class="close">X</button></span>
+            </div>
+            <div id="divAddMount"><button id="buttonAddMount">+</button><div class="flag">*.D64 *.D71 *.D81</div></div>
+            <div class="level">LEVEL III: Extended Data</div>
+            <div class="blurb">Optional. Add raw binary data, accessible in 64K chunks. Total BBT file size must be under 4GB.</div>
+            <div class="row">
+              <div class="item" id="pathData"></div>
+              <button id="buttonAddData">+</button>
+              <button id="buttonRemoveData" class="close">X</button>
+            </div>
+          </td>
+          <td width="50%" class="column-r">
+            <div class="col-header">Annotation</div>
+            <div class="level">INTRO: Music and Screenshots</div>
+            <div class="blurb">These are presented in a slideshow prior to starting the program.</div>
+            <div class="row">
+              <div class="item" id="pathMusic"></div>
+              <div id="divAddMusic"><button id="buttonAddMusic">+</button><div class="flag">*.SID</div></div>
+              <button id="buttonRemoveMusic" class="close">X</button>
+            </div>
+            <div class="row">
+              <span class="item-span"><div class="item" id="pathImage1"></div><button id="buttonRemoveImage1" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage2"></div><button id="buttonRemoveImage2" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage3"></div><button id="buttonRemoveImage3" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage4"></div><button id="buttonRemoveImage4" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage5"></div><button id="buttonRemoveImage5" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage6"></div><button id="buttonRemoveImage6" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage7"></div><button id="buttonRemoveImage7" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage8"></div><button id="buttonRemoveImage8" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage9"></div><button id="buttonRemoveImage9" class="close">X</button></span>
+              <span class="item-span"><div class="item" id="pathImage10"></div><button id="buttonRemoveImage10" class="close">X</button></span>
+            </div>
+            <div id="divAddImage"><button id="buttonAddImage">+</button><div class="flag">*.KLA *.KOA</div></div>
+          </td>
+        </tr></table>
       </main>
       <aside class="right"></aside>
     </div>

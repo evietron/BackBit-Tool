@@ -20,6 +20,11 @@ body,
 .row {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.item-span {
+  display: flex;
 }
 
 .item {
@@ -28,8 +33,10 @@ body,
   border: 1px solid;
   border-radius: 0.5em;
   padding: 0.3em 0.4em 0.5em 0.4em;
-  margin-right: 0.5em;
+  margin-right: 0.16em;
+  margin-top: 0.33em;
   color: lightskyblue;
+  white-space: nowrap;
 }
 
 .left {
@@ -64,7 +71,7 @@ th {
 
 button {
   font-size: 1em;
-  margin: 0.25em 0.25em 1em 0;
+  margin: 0.25em 0.25em 0.5em 0;
   border-radius: 0.5em;
   background-color: #444;
   box-shadow: 0 5px #222;
@@ -75,10 +82,6 @@ button {
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000; 
-}
-
-.close {
-  transform: translateY(0.25em);
 }
 
 button:disabled {
@@ -121,6 +124,31 @@ button:active {
 
 .version {
   font-family: Arial, Helvetica, sans-serif;
-  text-align: right;
+  text-align: left;
+  vertical-align: bottom;
   font-size: 13pt;
+  margin: 0 auto;
+}
+
+.col-header {
+  font-family: Arial, Helvetica, sans-serif;
+  border-bottom: 1px solid red;
+  font-size: 16pt;
+  margin-bottom: 0.5em;
+}
+
+.column-l, .column-r {
+  vertical-align: top;
+}
+
+.column-l {
+  padding-right: 0.5em;
+}
+
+.column-r {
+  padding-left: 0.5em;
+}
+
+.close {
+  margin-top: 0.5em;
 }
