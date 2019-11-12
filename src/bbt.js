@@ -6,6 +6,7 @@ const version = require('../package').version;
 const fs = require('fs');
 const tmp = require('tmp');
 const fileref = require('./fileref');
+const spawn = require('npm-run').spawnSync;
 
 //
 // Anatomy of a BBT file
@@ -253,12 +254,25 @@ function writeMusic(fd, music) {
     }
 }
 
-function writeImage(fd, intro) {
-    let data = fileref.read(intro);
-    if (intro.offset) {
+function writeImage(fd, image) {
+    let data = null;
+    if (image.offset) {
         // pre-rendered
+        data = fileref.read(image);
         writeBuffer(fd, data);
     } else {
+        let path = image.path;
+        let lower = path.toLowerCase();
+        let out = null;
+        if (!lower.endsWith(".kla") && !lower.endsWith("koa")) {
+            out = tmp.fileSync({ postfix: '.kla' });
+            spawn('retropixels', [image.path, out.name]);
+            image = fileref.generate(out.name);
+        }
+        data = fileref.read(image);
+        if (!data.length) {
+            throw "Image conversion for " + path + " failed";
+        }
         writeBlock(fd, 'INTROKLA', 0, data);
     }
 }
@@ -285,7 +299,9 @@ function build(path, details) {
         if (details.data) {
             writeData(fd, details.data);
         }
-        writeMusic(fd, details.music);
+        if (details.music) {
+            writeMusic(fd, details.music);
+        }
         for (let i = 0; i < details.images.length; i++) {
             writeImage(fd, details.images[i]);
         }
