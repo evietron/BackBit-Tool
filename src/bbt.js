@@ -159,6 +159,10 @@ function writeProgram(fd, addr, data) {
     writeBlock(fd, 'STARTPRG', i, data);
 }
 
+function writeCart(fd, size, data) {
+    writeBlock(fd, 'MOUNTCRT', size, data);
+}
+
 function writeMount(fd, device, data) {
     let ext = null;
     if (data.length === 174848 || data.length === 175531) {
@@ -207,6 +211,11 @@ function renderData(fd, data) {
 function build(path, details) {
     let out = tmp.fileSync();
     let fd = out.fd;
+
+    if (details.cart && (details.program || details.mounts.length)) {
+        throw "Can't combine autostart program or disks with a cartridge";
+    }
+
     if (fd) {
         writeHeader(fd);
         if (details.program) {
@@ -220,6 +229,18 @@ function build(path, details) {
                 writeProgram(fd, addr, data.slice(2));
             } else {
                 throw "Startup program is invalid";
+            }
+        }
+        if (details.cart) {
+            let data = fileref.read(details.cart);
+            if (details.cart.offset) {
+                // pre-rendered
+                writeBuffer(fd, data);
+            } else if (data.length >= 8192) {
+                let size = Math.floor(data.length / 8192) * 8192;
+                writeCart(fd, size, data);
+            } else {
+                throw "Cartridge is invalid";
             }
         }
         for (let i = 0; i < details.mounts.length; i++) {
@@ -245,6 +266,7 @@ function build(path, details) {
 function parse(path) {
     let details = {
         program: null,
+        cart: null,
         mounts: [],
         data: null
     }
@@ -264,6 +286,9 @@ function parse(path) {
             switch (block.name) {
                 case "STARTPRG":
                     details.program = block.ref;
+                    break;
+                case "MOUNTCRT":
+                    details.cart = block.ref;
                     break;
                 case "MOUNTD64":
                 case "MOUNTD71":

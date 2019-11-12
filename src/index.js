@@ -48,19 +48,19 @@ function shortenPath(ref) {
 }
 
 function isEmpty() {
-    return !details.program && !details.mounts.length && !details.data;
+    return !details.program && !details.cart && !details.mounts.length && !details.data;
 }
 
 function isValid() {
-    return details.program || details.mounts.length;
+    return details.program || details.cart || details.mounts.length;
 }
 
 function updateButtonStates() {
     $('#buttonNew').disabled = isEmpty();
     $('#buttonSaveAs').disabled = !isValid();
-    $('#divAddProgram').style.display = details.program ? 'none' : 'flex';
-    $('#buttonRemoveProgram').style.display = details.program ? 'flex' : 'none';
-    $('#pathProgram').style.display = details.program ? 'flex' : 'none';
+    $('#divAddProgram').style.display = (details.program || details.cart) ? 'none' : 'flex';
+    $('#buttonRemoveProgram').style.display = (details.program || details.cart) ? 'flex' : 'none';
+    $('#pathProgram').style.display = (details.program || details.cart) ? 'flex' : 'none';
     $('#divAddMount').style.display = (details.mounts.length === 8) ? 'none' : 'flex';
     for (let i = 1; i <= 8; i++) {
         $('#buttonRemoveMount' + i).style.display =
@@ -93,6 +93,7 @@ function confirmOverwrite() {
 function newFile() {
     if (confirmOverwrite()) {
         details.program = null;
+        details.cart = null;
         details.mounts = [];
         details.data = null;
         updateButtonStates();
@@ -134,7 +135,13 @@ function openFile() {
 
 function addProgram() {
     chooseFile('#prgFileDialog', function(path) {
-        details.program = fileref.generate(path);
+        if (path.toLowerCase().endsWith('.prg')) {
+            details.program = fileref.generate(path);
+        } else if (path.toLowerCase().endsWith('.crt')) {
+            details.cart = fileref.generate(path);
+        } else {
+            alert("Invalid file format");
+        }
         updateRefs();
         updateButtonStates();
     });
@@ -142,11 +149,12 @@ function addProgram() {
 
 function removeProgram() {
     details.program = null;
+    details.cart = null;
     updateButtonStates();
 }
 
 function updateRefs() {
-    $('#pathProgram').innerHTML = shortenPath(details.program);
+    $('#pathProgram').innerHTML = shortenPath(details.program || details.cart);
     for (let i = 0; i < details.mounts.length; i++) {
         $('#pathMount' + (i + 1)).innerHTML = (8 + i) + ': ' + shortenPath(details.mounts[i]);
     }

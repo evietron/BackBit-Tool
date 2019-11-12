@@ -8,7 +8,7 @@
   <body>
     <input style="display:none" id="saveFileDialog" type="file" nwsaveas="untitled" />
     <input style="display:none" id="bbtFileDialog" type="file" accept=".bbt" />
-    <input style="display:none" id="prgFileDialog" type="file" accept=".prg" />
+    <input style="display:none" id="prgFileDialog" type="file" accept=".prg,.crt" />
     <input style="display:none" id="d64FileDialog" type="file" accept=".d64,.d71,.d81" />
     <input style="display:none" id="binFileDialog" type="file" />
     <header></header>
@@ -20,11 +20,11 @@
         <button id="buttonNew">New</button>
         <button id="buttonOpen">Open...</button>
         <button id="buttonSaveAs">Save As...</button>
-        <div class="level">LEVEL I: Startup Program</div>
+        <div class="level">LEVEL I: Startup Program or Cartridge</div>
         <div class="blurb">Not required, but if not present then a mounted disk must be present.</div>
         <div class="row">
           <div class="item" id="pathProgram"></div>
-          <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG</div></div>
+          <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG *.CRT</div></div>
           <div class="close"><button id="buttonRemoveProgram">X</button></div>
         </div>
         <div class="level">LEVEL II: Mounted Disks</div>

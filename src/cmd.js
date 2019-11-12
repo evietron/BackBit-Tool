@@ -11,7 +11,7 @@ let details = bbt.parse();
 if (process.argv.length < 4) {
     console.log("BackBitTool " + version);
     console.log("Usage: BackBitTool <output.bbt> <input files...>");
-    console.log("Supported input files include: PRG,D64,D71,D81,SID,KLA")
+    console.log("Supported input files include: PRG,CRT,D64,D71,D81,SID,KLA")
     console.log("Use any unsupported extension to add extended data");
     process.exit();
 }
@@ -35,6 +35,14 @@ while (input.length) {
                 details.program = fileref.generate(s);
             } else {
                 console.error("Too many program files (only 1 is allowed)");
+                process.exit(1);
+            }
+            break;
+        case 'crt':
+            if (!details.cart) {
+                details.cart = fileref.generate(s);
+            } else {
+                console.error("Too many cartridge images (only 1 is allowed)");
                 process.exit(1);
             }
             break;
