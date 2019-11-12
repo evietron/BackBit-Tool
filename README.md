@@ -6,7 +6,7 @@ The BBT file format offers the following innovations:
 * Prepend SID music and title screen/screenshots
 * Autostarts to any program
 * Incorporates up to 8 disk images (D64/D71/D81)
-* Supports up to 4 gigabytes of binary data
+* Supports up to 4GB of binary data
 * Tags important details about the program, including text and screenshots
 
 While this format is designed to integrate with the BackBit cartridge, it is likely that emulators will eventually support this format once there is enough demand.
