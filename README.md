@@ -66,3 +66,8 @@ TO DO:
   * Multi line
     * Release notes
     * Instructions
+* Packaging
+  * Use 'cli' package for Command Line interface
+  * Create npm package
+  * Test `npm install -g backbit`
+  * Export functions that can be used in require('backbit')
