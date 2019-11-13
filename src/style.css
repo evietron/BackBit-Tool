@@ -136,7 +136,7 @@ button:active {
   margin-bottom: 0.5em;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  background-image: linear-gradient(black, red, black);
+  background-image: linear-gradient( red, black);
   text-align: center;
   text-shadow:
     -2px -2px 0 #000,
@@ -189,6 +189,14 @@ textarea {
   width: 0.5em;
 }
 
+::-webkit-scrollbar-track {
+  background: black
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(black, #400, black);
+}
+
 textarea::-webkit-scrollbar-track {
   background: #440;
 }
@@ -199,5 +207,10 @@ textarea::-webkit-scrollbar-thumb {
 
 input:focus,
 textarea:focus {
-  background-color: #222;
+  background-image: linear-gradient(black, #222);
+}
+
+input::selection,
+textarea::selection {
+  background: #880;
 }
