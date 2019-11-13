@@ -132,9 +132,22 @@ button:active {
 
 .col-header {
   font-family: Arial, Helvetica, sans-serif;
-  border-bottom: 1px solid red;
   font-size: 16pt;
   margin-bottom: 0.5em;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  background-image: linear-gradient(black, red, black);
+  text-align: center;
+  text-shadow:
+    -2px -2px 0 #000,
+    -2px 0 0 #000,
+    -2px 2px 0 #000,
+    0 -2px 0 #000,
+    0 0px 0 #000,
+    0 2px 0 #000,
+    2px -2px 0 #000,
+    2px 0 0 #000,
+    2px 2px 0 #000;
 }
 
 .column-l, .column-r {
@@ -151,4 +164,40 @@ button:active {
 
 .close {
   margin-top: 0.5em;
+}
+
+input,
+textarea {
+  width: 100%;
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+  border: 0;
+  border-bottom: 1px solid red;
+  background: black;
+  outline: none;
+  color: yellow;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+}
+
+textarea {
+  resize: none;
+  height: 3em;
+}
+
+::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #440;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: yellow;
+}
+
+input:focus,
+textarea:focus {
+  background-color: #222;
 }
