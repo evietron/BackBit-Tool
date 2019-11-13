@@ -56,18 +56,7 @@ To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
 
 TO DO:
-* Add text field support
-  * Single line (40 cols)
-    * Title
-    * Copyright (year of release, publisher)
-    * Version (media, remastered, trainers, etc.)
-    * Category (application/demo/game, genre, similar to)
-    * Controller (joystick #, keyboard, paddles, mouse, touchpad)
-  * Multi line
-    * Release notes
-    * Instructions
-* Packaging
-  * Use 'cli' package for Command Line interface
-  * Create npm package
-  * Test `npm install -g backbit`
-  * Export functions that can be used in require('backbit')
+* Use 'cli' package for Command Line interface
+* Create npm package
+* Test `npm install -g backbit`
+* Export functions that can be used in require('backbit')
