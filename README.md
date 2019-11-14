@@ -55,7 +55,7 @@ To install PRODUCTION build in your Applications folder (Mac OSX only for now):
 To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
 
-TO DO:
+## TO DO
 * Use 'cli' package for Command Line interface
 * Create npm package
 * Test `npm install -g backbit`
