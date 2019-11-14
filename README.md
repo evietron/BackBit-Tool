@@ -26,7 +26,7 @@ Also usable with a command-line interface:
 ```
 BackBitTool 1.1.0
 Usage: BackBitTool <output.bbt> <input files...>
-Supported input files include: PRG,D64,D71,D81,SID,KLA
+Supported input files include: PRG,CRT,D64,D71,D81,SID,KLA
 Use any unsupported extension to add extended data
 ```
 
@@ -50,7 +50,7 @@ To execute PRODUCTION build (Mac OSX only for now):
 * `npm run prod`
 
 To install PRODUCTION build in your Applications folder (Mac OSX only for now):
-* `npm run install`
+* `npm run app`
 
 To run COMMAND-LINE version:
 * `node src/cmd.js <params>`
