@@ -48,9 +48,20 @@ function shortenPath(ref) {
 }
 
 function isEmpty() {
-    return !details.program && !details.cart && !details.mounts.length &&
-        !details.data && !details.music && !details.images.length;
-}
+    return !details.program &&
+        !details.cart &&
+        !details.mounts.length &&
+        !details.data &&
+        !details.music &&
+        !details.images.length &&
+        $('#txtTitle').value === '' &&
+        $('#txtVersion').value === '' &&
+        $('#txtCopyright').value === '' &&
+        $('#txtCategory').value === '' &&
+        $('#txtController').value === '' &&
+        $('#txtRelease').value === '' &&
+        $('#txtManual').value === '';
+    }
 
 function isValid() {
     return details.program || details.cart || details.mounts.length;
@@ -103,6 +114,7 @@ function newFile() {
     if (confirmOverwrite()) {
         details = bbt.parse();
         interpretTextFields();
+        updateRefs();
         updateButtonStates();
     }
 }
@@ -122,6 +134,9 @@ function compileTextFields() {
 }
 
 function refToText(ref) {
+    if (!ref) {
+        return '';
+    }
     return bbt.stripContent(dataref.read(ref));
 }
 
@@ -302,5 +317,12 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#buttonRemoveImage8').addEventListener('click', setupRemoveImage(7));
     $('#buttonRemoveImage9').addEventListener('click', setupRemoveImage(8));
     $('#buttonRemoveImage10').addEventListener('click', setupRemoveImage(9));
+    $('#txtTitle').addEventListener('blur', updateButtonStates);
+    $('#txtVersion').addEventListener('blur', updateButtonStates);
+    $('#txtCopyright').addEventListener('blur', updateButtonStates);
+    $('#txtCategory').addEventListener('blur', updateButtonStates);
+    $('#txtController').addEventListener('blur', updateButtonStates);
+    $('#txtRelease').addEventListener('blur', updateButtonStates);
+    $('#txtManual').addEventListener('blur', updateButtonStates);
     updateButtonStates();
 });
