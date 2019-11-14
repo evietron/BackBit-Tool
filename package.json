@@ -3,6 +3,9 @@
   "version": "1.1.1",
   "description": "",
   "main": "src/index.html",
+  "bin": {
+    "backbit-tool": "./src/cmd.js"
+  }
   "window": {
     "title": "BackBit Tool",
     "min_width": 1000,
