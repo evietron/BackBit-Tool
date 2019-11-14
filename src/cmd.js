@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 //
 // Command-Line Implementation for BackBit Tool
 //
