@@ -30,14 +30,22 @@ Supported input files include: PRG,CRT,D64,D71,D81,SID,KLA
 Use any unsupported extension to add extended data
 ```
 
-## Build instructions
-
-This is a NW.js app which means it is a JavaScript application that runs in a browser framework, appearing as an executable on Windows, Mac OSX, or Linux machines. This is great for compatibility, and builds on the Node.js infrastructure.
+## Command-Line Usage
 
 You must install node & npm to build on your machine:
 https://nodejs.org/en/download/
 
+To install COMMAND-LINE version:
+* `npm i -g backbit-tool`
+
+To run COMMAND-LINE version once installed:
+* `backbit-tool`
+
+## Development
+
 To setup for development (first time only):
+* `git clone https://github.com/evietron/BackBit-Tool.git`
+* `cd BackBit-Tool`
 * `npm run dev`
 
 To execute in DEBUG mode:
@@ -51,9 +59,6 @@ To execute PRODUCTION build (Mac OSX only for now):
 
 To install PRODUCTION build in your Applications folder (Mac OSX only for now):
 * `npm run app`
-
-To run COMMAND-LINE version:
-* `node src/cmd.js <params>`
 
 ## TO DO (Need help with!)
 * Get build size down (webpack?)
