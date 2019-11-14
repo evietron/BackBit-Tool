@@ -4,10 +4,9 @@
 
 const version = require('../package').version;
 const fs = require('fs');
-const tmp = require('tmp');
 const dataref = require('./dataref');
-const spawn = require('npm-run').spawnSync;
-
+const tmp = require('tmp');
+const npmRun = require('npm-run');
 //
 // Anatomy of a BBT file
 //
@@ -300,7 +299,7 @@ function writeImage(fd, image) {
         let out = null;
         if (!lower.endsWith(".kla") && !lower.endsWith("koa")) {
             out = tmp.fileSync({ postfix: '.kla' });
-            spawn('retropixels', [image.path, out.name]);
+            npmRun.spawnSync('retropixels', [image.path, out.name]);
             image = dataref.generateFromPath(out.name);
         }
         data = dataref.read(image);

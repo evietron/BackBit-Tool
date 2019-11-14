@@ -1,33 +1,19 @@
 //
 // This is the main code for the NW.js application (gets loaded by the index.html)
 //
+try {
 
 const version = require('../package').version;
 const bbt = require('./bbt');
 const dataref = require('./dataref');
 const fs = require('fs');
 
-let handlers = {};
-
 let details = bbt.parse();
-
-// fix mac application menu title in production build
-if (process.versions['nw-flavor'] === 'normal') {
-    if (process.platform === 'darwin') {
-        var mb = new nw.Menu({type: 'menubar'});
-        mb.createMacBuiltin('BackBit Tool');
-        nw.Window.get().menu = mb;
-    }
-}
+let handlers = {};
 
 let $ = function (selector) {
     return document.querySelector(selector);
 }
-
-nw.Window.get().on('loaded', function() {
-    $('.version').innerHTML = "Tool v" + version;
-    nw.Window.get().show();
-})
 
 function shortenPath(ref) {
     let path = '';
@@ -287,7 +273,8 @@ function setupRemoveImage(index) {
     };
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initApp() {
+    $('.version').innerHTML = "Tool v" + version;
     $('#buttonNew').addEventListener('click', newFile);
     $('#buttonOpen').addEventListener('click', openFile);
     $('#buttonSaveAs').addEventListener('click', saveAsFile);
@@ -325,4 +312,26 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#txtRelease').addEventListener('blur', updateButtonStates);
     $('#txtManual').addEventListener('blur', updateButtonStates);
     updateButtonStates();
-});
+};
+
+function initWindow() {
+    nw.Window.get().show();
+    nw.Window.get().focus();
+
+    // fix mac application menu title in production build
+    if (process.versions['nw-flavor'] === 'normal') {
+        if (process.platform === 'darwin') {
+            var mb = new nw.Menu({type: 'menubar'});
+            mb.createMacBuiltin('BackBit Tool');
+            nw.Window.get().menu = mb;
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+nw.Window.get().on('loaded', initWindow);
+
+}
+catch (e) {
+    alert(e.toString());
+}
