@@ -57,7 +57,11 @@ To run COMMAND-LINE version:
 
 ## TO DO (Need help with!)
 * Get build size down (webpack?)
-* Use 'cli' package for Command Line interface
+
+## TO DO (Just lazy...)
 * Create npm package
 * Test `npm install -g backbit`
+* Use 'cli' package for Command Line interface
 * Export functions that can be used in require('backbit')
+* Open a .BBT and update with commandline
+* Add text fields with commandline
