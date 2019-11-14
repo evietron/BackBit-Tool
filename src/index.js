@@ -102,6 +102,7 @@ function confirmOverwrite() {
 function newFile() {
     if (confirmOverwrite()) {
         details = bbt.parse();
+        interpretTextFields();
         updateButtonStates();
     }
 }
@@ -118,6 +119,20 @@ function compileTextFields() {
     details.text.controller = textToRef($('#txtController').value);
     details.text.release = textToRef($('#txtRelease').value);
     details.text.manual = textToRef($('#txtManual').value);
+}
+
+function refToText(ref) {
+    return bbt.stripContent(dataref.read(ref));
+}
+
+function interpretTextFields() {
+    $('#txtTitle').value = refToText(details.text.title);
+    $('#txtVersion').value = refToText(details.text.version);
+    $('#txtCopyright').value = refToText(details.text.copyright);
+    $('#txtCategory').value = refToText(details.text.category);
+    $('#txtController').value = refToText(details.text.controller);
+    $('#txtRelease').value = refToText(details.text.release);
+    $('#txtManual').value = refToText(details.text.manual);
 }
 
 function saveAsFile() {
@@ -148,6 +163,7 @@ function openFile() {
             } catch (e) {
                 alert(e.toString());
             }
+            interpretTextFields();
             updateRefs();
             updateButtonStates();
         });

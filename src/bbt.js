@@ -148,16 +148,19 @@ function writePaddedBuffer(fd, data) {
     }
 }
 
+function getContentLenFromHeader(header) {
+    return (header[12] << 24) |
+        (header[13] << 16) |
+        (header[14] << 8) |
+        header[15];
+}
+
 function readBlockInfo(path, fd, offset) {
     let header = Buffer.alloc(HEADER_LEN);
     fs.readSync(fd, header, 0, HEADER_LEN, offset);
     let name = String.fromCharCode(...header.slice(0, 8));
     let param = String.fromCharCode(...header.slice(8, 12));
-    let bytes =
-        (header[12] << 24) |
-        (header[13] << 16) |
-        (header[14] << 8) |
-        header[15];
+    let bytes = getContentLenFromHeader(header);
     let padded = bytes;
     if (bytes % PADDING_OFFSET) {
         padded += PADDING_OFFSET - (bytes % PADDING_OFFSET);
@@ -441,7 +444,14 @@ function parse(path) {
     return details;
 }
 
+function stripContent(data) {
+    // strip byte buffer into just data content
+    let len = getContentLenFromHeader(data);
+    return data.slice(HEADER_LEN, HEADER_LEN + len);
+}
+
 module.exports = {
     build,
-    parse
+    parse,
+    stripContent
 }
