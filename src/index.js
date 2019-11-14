@@ -4,7 +4,7 @@
 
 const version = require('../package').version;
 const bbt = require('./bbt');
-const fileref = require('./fileref');
+const dataref = require('./dataref');
 const fs = require('fs');
 
 let handlers = {};
@@ -106,6 +106,20 @@ function newFile() {
     }
 }
 
+function textToRef(text) {
+    return dataref.generateFromBuf(Buffer.from(text));
+}
+
+function compileTextFields() {
+    details.text.title = textToRef($('#txtTitle').value);
+    details.text.version = textToRef($('#txtVersion').value);
+    details.text.copyright = textToRef($('#txtCopyright').value);
+    details.text.category = textToRef($('#txtCategory').value);
+    details.text.controller = textToRef($('#txtController').value);
+    details.text.release = textToRef($('#txtRelease').value);
+    details.text.manual = textToRef($('#txtManual').value);
+}
+
 function saveAsFile() {
     chooseFile('#saveFileDialog', function(path) {
         try {
@@ -117,6 +131,7 @@ function saveAsFile() {
                 ok = confirm("REALLY overwrite " + path + "?");
             }
             if (ok) {
+                compileTextFields();
                 bbt.build(path, details);
             }
         } catch (e) {
@@ -142,9 +157,9 @@ function openFile() {
 function addProgram() {
     chooseFile('#prgFileDialog', function(path) {
         if (path.toLowerCase().endsWith('.prg')) {
-            details.program = fileref.generate(path);
+            details.program = dataref.generateFromPath(path);
         } else if (path.toLowerCase().endsWith('.crt')) {
-            details.cart = fileref.generate(path);
+            details.cart = dataref.generateFromPath(path);
         } else {
             alert("Invalid file format");
         }
@@ -162,7 +177,7 @@ function removeProgram() {
 function addMusic() {
     chooseFile('#sidFileDialog', function(path) {
         if (path.toLowerCase().endsWith('.sid')) {
-            details.music = fileref.generate(path);
+            details.music = dataref.generateFromPath(path);
         } else {
             alert("Invalid file format");
         }
@@ -190,7 +205,7 @@ function updateRefs() {
 
 function addMount() {
     chooseFile('#d64FileDialog', function(path) {
-        details.mounts.push(fileref.generate(path));
+        details.mounts.push(dataref.generateFromPath(path));
         updateRefs();
         updateButtonStates();
     });
@@ -204,7 +219,7 @@ function removeMount(index) {
 
 function addImage() {
     chooseFile('#klaFileDialog', function(path) {
-        details.images.push(fileref.generate(path));
+        details.images.push(dataref.generateFromPath(path));
         updateRefs();
         updateButtonStates();
     });
@@ -218,7 +233,7 @@ function removeImage(index) {
 
 function addData() {
     chooseFile('#binFileDialog', function(path) {
-        details.data = fileref.generate(path);
+        details.data = dataref.generateFromPath(path);
         updateRefs();
         updateButtonStates();
     });

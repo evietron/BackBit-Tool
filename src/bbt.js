@@ -5,7 +5,7 @@
 const version = require('../package').version;
 const fs = require('fs');
 const tmp = require('tmp');
-const fileref = require('./fileref');
+const dataref = require('./dataref');
 const spawn = require('npm-run').spawnSync;
 
 //
@@ -24,6 +24,8 @@ const spawn = require('npm-run').spawnSync;
 // The header for a chunk is always 16 bytes:
 // - [8-char type id] [4-byte parameter] [4-byte content length]
 // - note that content length does not include the length of the header
+// - if there is no parameter needed, the type id can extend into the parameter area
+// - (however, characters 9-12 of the type id are ignored)
 const HEADER_LEN = 16;
 
 // For easy readability in a hex editor, all fields are padded to 16 byte offsets
@@ -54,19 +56,46 @@ const PADDING_OFFSET = 16;
 // - content is a D64/D71/D81 file
 
 // Extended data chunk
-// - type id: "EXTENDED"
-// - parmeter: "DATA" (does not vary)
+// - type id: "EXTENDEDDATA"
 // - content is user-defined binary data
 
 // Intro Music
 // - type id: "INTROSID"
-// - parameter: song # for SID (0 = default)
+// - parameter: 0 (reserved for future use)
 // - content is SID file
 
 // Intro Graphics
 // - type id: "INTROKLA"
-// - parameter: # of seconds to display (0 = default)
+// - parameter: 0 (reserved for future use)
 // - content is KLA file
+
+// Title
+// - type id: "TXTTITLE"
+// - content is UTF8 text
+
+// Version
+// - type id: "TXTVERSION"
+// - content is UTF8 text
+
+// Copyright
+// - type id: "TXTCOPYRIGHT"
+// - content is UTF8 text
+
+// Category
+// - type id: "TXTCATEGORY"
+// - content is UTF8 text
+
+// Controller
+// - type id: "TXTCONTROL"
+// - content is UTF8 text
+
+// Release Note
+// - type id: "TXTNOTES"
+// - content is UTF8 text
+
+// Instructions
+// - type id: "TXTMANUAL"
+// - content is UTF8 text
 
 // Ending chunk
 // - type id: "BACKBITS"
@@ -87,6 +116,7 @@ function stringToBytes(s) {
 }
 
 function stringToUInt32(s) {
+    s = s.padEnd(4);
     return (s.charCodeAt(0) << 24) +
         (s.charCodeAt(1) << 16) +
         (s.charCodeAt(2) << 8) +
@@ -133,7 +163,7 @@ function readBlockInfo(path, fd, offset) {
         padded += PADDING_OFFSET - (bytes % PADDING_OFFSET);
     }
     let nextOffset = offset + HEADER_LEN + padded;
-    let ref = fileref.generate(path, offset, HEADER_LEN + padded);
+    let ref = dataref.generateFromPath(path, offset, HEADER_LEN + padded);
     return {
         name,
         param,
@@ -162,7 +192,7 @@ function writeFooter(fd) {
 }
 
 function writeProgram(fd, program) {
-    let data = fileref.read(program);
+    let data = dataref.read(program);
     if (program.offset) {
         // pre-rendered
         writeBuffer(fd, data);
@@ -182,7 +212,7 @@ function writeProgram(fd, program) {
 }
 
 function writeCart(fd, cart) {
-    let data = fileref.read(cart);
+    let data = dataref.read(cart);
     if (cart.offset) {
         // pre-rendered
         writeBuffer(fd, data);
@@ -195,7 +225,7 @@ function writeCart(fd, cart) {
 }
 
 function writeMount(fd, mount) {
-    let data = fileref.read(mount);
+    let data = dataref.read(mount);
     if (mount.offset) {
         // pre-rendered
         writeBuffer(fd, data);
@@ -214,6 +244,7 @@ function writeMount(fd, mount) {
     }
 }
 
+// TO DO: eventually build this block parsing into dataref.js
 function writeData(fd, data) {
     let len = data.bytes;
     if (len === -1) {
@@ -245,7 +276,7 @@ function writeData(fd, data) {
 }
 
 function writeMusic(fd, music) {
-    let data = fileref.read(music);
+    let data = dataref.read(music);
     if (music.offset) {
         // pre-rendered
         writeBuffer(fd, data);
@@ -258,7 +289,7 @@ function writeImage(fd, image) {
     let data = null;
     if (image.offset) {
         // pre-rendered
-        data = fileref.read(image);
+        data = dataref.read(image);
         writeBuffer(fd, data);
     } else {
         let path = image.path;
@@ -267,14 +298,18 @@ function writeImage(fd, image) {
         if (!lower.endsWith(".kla") && !lower.endsWith("koa")) {
             out = tmp.fileSync({ postfix: '.kla' });
             spawn('retropixels', [image.path, out.name]);
-            image = fileref.generate(out.name);
+            image = dataref.generateFromPath(out.name);
         }
-        data = fileref.read(image);
+        data = dataref.read(image);
         if (!data.length) {
             throw "Image conversion for " + path + " failed";
         }
         writeBlock(fd, 'INTROKLA', 0, data);
     }
+}
+
+function writeText(fd, id, ref) {
+    writeBlock(fd, id.substr(0, 8), stringToUInt32(id.substr(8)), dataref.read(ref)); 
 }
 
 function build(path, details) {
@@ -305,6 +340,15 @@ function build(path, details) {
         for (let i = 0; i < details.images.length; i++) {
             writeImage(fd, details.images[i]);
         }
+    
+        writeText(fd, 'TXTTITLE', details.text.title);
+        writeText(fd, 'TXTVERSION', details.text.version);
+        writeText(fd, 'TXTCOPYRIGHT', details.text.copyright);
+        writeText(fd, 'TXTCATEGORY', details.text.category);
+        writeText(fd, 'TXTCONTROL', details.text.controller);
+        writeText(fd, 'TXTNOTES', details.text.release);
+        writeText(fd, 'TXTMANUAL', details.text.manual);
+    
         writeFooter(fd);
         fs.closeSync(fd);
         fs.renameSync(out.name, path);
@@ -320,7 +364,8 @@ function parse(path) {
         mounts: [],
         data: null,
         music: null,
-        images: []
+        images: [],
+        text: {}
     }
 
     if (path) {
@@ -355,6 +400,27 @@ function parse(path) {
                     break;
                 case "INTROKLA":
                     details.images.push(block.ref);
+                    break;
+                case "TXTTITLE":
+                    details.text.title = block.ref;
+                    break;
+                case "TXTVERSI":
+                    details.text.version = block.ref;
+                    break;
+                case "TXTCOPYR":
+                    details.text.copyright = block.ref;
+                    break;
+                case "TXTCATEG":
+                    details.text.category = block.ref;
+                    break;
+                case "TXTCONTR":
+                    details.text.controller = block.ref;
+                    break;
+                case "TXTNOTES":
+                    details.text.release = block.ref;
+                    break;
+                case "TXTMANUA":
+                    details.text.manual = block.ref;
                     break;
                 case "BACKBITS":
                     footer = true;

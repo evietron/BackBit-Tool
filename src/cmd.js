@@ -4,7 +4,7 @@
 
 const version = require('../package').version;
 const bbt = require('./bbt');
-const fileref = require('./fileref');
+const dataref = require('./dataref');
 
 let details = bbt.parse();
 
@@ -32,7 +32,7 @@ while (input.length) {
     switch (ext.toLowerCase()) {
         case 'prg':
             if (!details.program) {
-                details.program = fileref.generate(s);
+                details.program = dataref.generateFromPath(s);
             } else {
                 console.error("Too many program files (only 1 is allowed)");
                 process.exit(1);
@@ -40,7 +40,7 @@ while (input.length) {
             break;
         case 'crt':
             if (!details.cart) {
-                details.cart = fileref.generate(s);
+                details.cart = dataref.generateFromPath(s);
             } else {
                 console.error("Too many cartridge images (only 1 is allowed)");
                 process.exit(1);
@@ -50,7 +50,7 @@ while (input.length) {
         case 'd71':
         case 'd81':
             if (details.mounts.length < 8) {
-                details.mounts.push(fileref.generate(s));
+                details.mounts.push(dataref.generateFromPath(s));
             } else {
                 console.error("Too many disk images (only 8 are allowed)");
                 process.exit(1);
@@ -63,7 +63,7 @@ while (input.length) {
             break;
         default:
             if (!details.data) {
-                details.data = fileref.generate(s);
+                details.data = dataref.generateFromPath(s);
             } else {
                 console.error("Too many unknown extensions (first is used for extended data)");
                 process.exit(1);

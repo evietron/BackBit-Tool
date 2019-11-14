@@ -1,5 +1,5 @@
 //
-// File references used in composing BBT file content
+// Data references used in composing BBT file content
 //
 // This allows for the following use cases:
 // - Reference an actual file in the filesystem
@@ -18,7 +18,7 @@
 const fs = require('fs');
 
 // Returns a new "ref"
-function generate(path, offset = 0, bytes = -1) {
+function generateFromPath(path, offset = 0, bytes = -1) {
     // if offset > 0, assume pre-rendered content with block header
     return {
         path,
@@ -26,10 +26,20 @@ function generate(path, offset = 0, bytes = -1) {
         bytes };
 }
 
+// Returns a new "ref"
+function generateFromBuf(buf) {
+    return { buf };
+}
+
 // Returns a byte buffer loaded from a ref
 // Note: It is not recommended to use this helper for the "extended data" field,
 //       since it can be up to 4GB (instead, read in chunks).
 function read(ref) {
+    // if already contains buffer, just return that
+    if (ref.buf) {
+        return ref.buf;
+    }
+
     let fd = fs.openSync(ref.path, "r");
 
     let stats = fs.statSync(ref.path);
@@ -46,6 +56,7 @@ function read(ref) {
 }
 
 module.exports = {
-    generate,
+    generateFromBuf,
+    generateFromPath,
     read
 }
