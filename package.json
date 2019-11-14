@@ -16,7 +16,7 @@
     "deploy": "node deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "open \"build/BackBit Tool/osx64/BackBit Tool.app\"",
-    "install": "rm -rf \"/Applications/BackBit Tool.app\" && cp -R \"build/BackBit Tool/osx64/BackBit Tool.app\" /Applications"
+    "drag": "rm -rf \"/Applications/BackBit Tool.app\" && cp -R \"build/BackBit Tool/osx64/BackBit Tool.app\" /Applications"
   },
   "repository": {
     "type": "git",
@@ -31,9 +31,10 @@
   "dependencies": {
     "npm-run": "^5.0.1",
     "nw": "^0.42.4",
-    "nw-builder": "^3.5.7",
     "retropixels": "^0.6.2",
     "tmp": "^0.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nw-builder-webpack-plugin": "^1.1.0"
+  }
 }
