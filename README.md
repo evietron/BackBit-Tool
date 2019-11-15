@@ -64,7 +64,8 @@ To install PRODUCTION build in your Applications folder (Mac OSX only for now):
 * Get build size down (webpack?)
 
 ## TO DO (Just lazy...)
-* Use 'cli' package for Command Line interface
+* Test Win32 npm install
+* Use 'commander' package for Command Line interface
 * Export functions that can be used in require('backbit')
 * Command Line features
   * Update a BBT instead of building from scratch
