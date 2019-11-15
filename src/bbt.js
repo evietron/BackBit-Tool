@@ -4,9 +4,11 @@
 
 const version = require('../package').version;
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const dataref = require('./dataref');
-const tmp = require('tmp');
 const npmRun = require('npm-run');
+
 //
 // Anatomy of a BBT file
 //
@@ -154,7 +156,7 @@ function getContentLenFromHeader(header) {
         header[15];
 }
 
-function readBlockInfo(path, fd, offset) {
+function readBlockInfo(src, fd, offset) {
     let header = Buffer.alloc(HEADER_LEN);
     fs.readSync(fd, header, 0, HEADER_LEN, offset);
     let name = String.fromCharCode(...header.slice(0, 8));
@@ -165,7 +167,7 @@ function readBlockInfo(path, fd, offset) {
         padded += PADDING_OFFSET - (bytes % PADDING_OFFSET);
     }
     let nextOffset = offset + HEADER_LEN + padded;
-    let ref = dataref.generateFromPath(path, offset, HEADER_LEN + padded);
+    let ref = dataref.generateFromPath(src, offset, HEADER_LEN + padded);
     return {
         name,
         param,
@@ -287,6 +289,11 @@ function writeMusic(fd, music) {
     }
 }
 
+function generateTempFile(ext) {
+    n = Math.floor(Math.random() * 1000000);
+    return path.join(os.tmpdir(), 'backbit' + n + '.' + ext);
+}
+
 function writeImage(fd, image) {
     let data = null;
     if (image.offset) {
@@ -294,19 +301,22 @@ function writeImage(fd, image) {
         data = dataref.read(image);
         writeBuffer(fd, data);
     } else {
-        let path = image.path;
-        let lower = path.toLowerCase();
+        let lower = image.path.toLowerCase();
         let out = null;
         if (!lower.endsWith(".kla") && !lower.endsWith("koa")) {
-            out = tmp.fileSync({ postfix: '.kla' });
-            npmRun.spawnSync('retropixels', [image.path, out.name]);
-            image = dataref.generateFromPath(out.name);
+            out = generateTempFile('kla');
+            alert("out = " + out);
+            npmRun.spawnSync('retropixels', [image.path, out]);
+            image = dataref.generateFromPath(out);
         }
         data = dataref.read(image);
         if (!data.length) {
-            throw "Image conversion for " + path + " failed";
+            throw "Image conversion for " + image.path + " failed";
         }
         writeBlock(fd, 'INTROKLA', 0, data);
+        if (out) {
+            fs.unlinkSync(out);
+        }
     }
 }
 
@@ -314,9 +324,10 @@ function writeText(fd, id, ref) {
     writeBlock(fd, id.substr(0, 8), stringToUInt32(id.substr(8)), dataref.read(ref)); 
 }
 
-function build(path, details) {
-    let out = tmp.fileSync();
-    let fd = out.fd;
+function build(dest, details) {
+    let out = generateTempFile('bbt');
+    alert("out = " + out);
+    let fd = fs.openSync(out, 'w');
 
     if (details.cart && (details.program || details.mounts.length || details.data)) {
         throw "Can't combine a cartridge with a program or data";
@@ -353,13 +364,13 @@ function build(path, details) {
     
         writeFooter(fd);
         fs.closeSync(fd);
-        fs.renameSync(out.name, path);
+        fs.renameSync(out, dest);
     } else {
-        throw "Can't create " + path;
+        throw "Can't create " + dest;
     }
 }
 
-function parse(path) {
+function parse(src) {
     let details = {
         program: null,
         cart: null,
@@ -370,17 +381,17 @@ function parse(path) {
         text: {}
     }
 
-    if (path) {
-        let fd = fs.openSync(path, "r");
+    if (src) {
+        let fd = fs.openSync(src, "r");
         let offset = 0;
-        let block = readBlockInfo(path, fd, 0);
+        let block = readBlockInfo(src, fd, 0);
         let footer = false;
         if (block.name !== "BACKBIT ") {
             throw "Invalid BBT header";
             return;
         }
         offset = block.nextOffset;
-        block = readBlockInfo(path, fd, offset);
+        block = readBlockInfo(src, fd, offset);
         while (!footer && block.nextOffset !== offset) {
             switch (block.name) {
                 case "STARTPRG":
@@ -436,7 +447,7 @@ function parse(path) {
                     return;
             }
             offset = block.nextOffset;
-            block = readBlockInfo(path, fd, offset);
+            block = readBlockInfo(src, fd, offset);
         }
     }
 

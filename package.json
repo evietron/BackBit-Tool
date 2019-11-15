@@ -34,9 +34,9 @@
   "dependencies": {
     "npm-run": "^5.0.1",
     "nw": "^0.42.4",
-    "nw-builder": "^3.5.7",
-    "retropixels": "^0.6.2",
-    "tmp": "^0.1.0"
+    "retropixels": "^0.6.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nw-builder": "^3.5.7"
+  }
 }
