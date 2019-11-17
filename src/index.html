@@ -11,7 +11,7 @@
     <input style="display:none" id="prgFileDialog" type="file" accept=".prg,.crt" />
     <input style="display:none" id="d64FileDialog" type="file" accept=".d64,.d71,.d81" />
     <input style="display:none" id="sidFileDialog" type="file" accept=".sid" />
-    <input style="display:none" id="klaFileDialog" type="file" accept=".jpg,.gif,.png,.kla,.koa" />
+    <input style="display:none" id="klaFileDialog" type="file" accept=".kla,.koa" />
     <input style="display:none" id="binFileDialog" type="file" />
     <header></header>
     <div class="main">
@@ -57,7 +57,7 @@
             <div class="col-header">Annotation</div>
             <div class="level">INTRO: Music and Screenshots</div>
             <div class="blurb">These are presented in a slideshow prior to starting the program.
-              Screenshots are 320x200 and are converted to multicolor Koala.
+              Screenshots must be 320x200 uncompressed multicolor Koala.
             </div>
             <div class="row">
               <div class="item" id="pathMusic"></div>
@@ -76,7 +76,7 @@
               <span class="item-span"><div class="item" id="pathImage9"></div><button id="buttonRemoveImage9" class="close">X</button></span>
               <span class="item-span"><div class="item" id="pathImage10"></div><button id="buttonRemoveImage10" class="close">X</button></span>
             </div>
-            <div id="divAddImage"><button id="buttonAddImage">+</button><div class="flag">*.JPG *.GIF *.PNG *.KLA *.KOA</div></div>
+            <div id="divAddImage"><button id="buttonAddImage">+</button><div class="flag">*.KLA *.KOA</div></div>
             <span class="level">Title</span><span class="blurb"> (The official name of the program with no descriptors)</span>
             <div class="row"><input type="text" maxlength="40" id="txtTitle"></div>
             <span class="level">Version</span><span class="blurb"> (Media, remastered, trainers, etc.)</span>

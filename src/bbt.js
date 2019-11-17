@@ -7,7 +7,6 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const dataref = require('./dataref');
-const npmRun = require('npm-run');
 
 //
 // Anatomy of a BBT file
@@ -295,26 +294,14 @@ function generateTempFile(ext) {
 }
 
 function writeImage(fd, image) {
-    let data = null;
+    let data = dataref.read(image);
     if (image.offset) {
         // pre-rendered
-        data = dataref.read(image);
         writeBuffer(fd, data);
     } else {
-        let lower = image.path.toLowerCase();
-        let out = null;
-        if (!lower.endsWith(".kla") && !lower.endsWith("koa")) {
-            out = generateTempFile('kla');
-            npmRun.spawnSync('retropixels', [image.path, out]);
-            image = dataref.generateFromPath(out);
-        }
-        data = dataref.read(image);
-        if (!data.length) {
-            throw "Image conversion for " + image.path + " failed";
-        }
-        writeBlock(fd, 'INTROKLA', 0, data);
-        if (out) {
-            fs.unlinkSync(out);
+        // not pre-rendered
+        if (data) {
+            writeBlock(fd, 'INTROKLA', 0, data);
         }
     }
 }

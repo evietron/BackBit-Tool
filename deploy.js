@@ -1,7 +1,7 @@
 const NwBuilder = require('nw-builder');
 
 let options = {
-  files: ['package.json', 'src/**', 'node_modules/**'],
+  files: ['package.json', 'src/**'],
 
   platforms: ['osx64', 'win32', 'win64', 'linux32', 'linux64'],
   appName: "BackBit Tool",

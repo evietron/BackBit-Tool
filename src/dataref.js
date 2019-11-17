@@ -40,17 +40,23 @@ function read(ref) {
         return ref.buf;
     }
 
-    let fd = fs.openSync(ref.path, "r");
-
-    let stats = fs.statSync(ref.path);
-    let len = stats['size'];
+    let result = 0;
     let bytes = ref.bytes;
-    if (bytes === -1) {
-        bytes = len - ref.offset;
-    }
+    let buf = null;
+    try {
+        let fd = fs.openSync(ref.path, "r");
 
-    let buf = Buffer.alloc(bytes);
-    let result = fs.readSync(fd, buf, 0, bytes, ref.offset);
+        let stats = fs.statSync(ref.path);
+        let len = stats['size'];
+        if (bytes === -1) {
+            bytes = len - ref.offset;
+        }
+
+        buf = Buffer.alloc(bytes);
+        result = fs.readSync(fd, buf, 0, bytes, ref.offset);
+    } catch (e) {
+        alert("Failed to read " + ref.path);
+    }
     
     return (result === bytes) ? buf : null;
 }
