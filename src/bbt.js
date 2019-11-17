@@ -305,7 +305,6 @@ function writeImage(fd, image) {
         let out = null;
         if (!lower.endsWith(".kla") && !lower.endsWith("koa")) {
             out = generateTempFile('kla');
-            alert("out = " + out);
             npmRun.spawnSync('retropixels', [image.path, out]);
             image = dataref.generateFromPath(out);
         }
@@ -321,12 +320,13 @@ function writeImage(fd, image) {
 }
 
 function writeText(fd, id, ref) {
-    writeBlock(fd, id.substr(0, 8), stringToUInt32(id.substr(8)), dataref.read(ref)); 
+    if (ref) {
+        writeBlock(fd, id.substr(0, 8), stringToUInt32(id.substr(8)), dataref.read(ref)); 
+    }
 }
 
 function build(dest, details) {
     let out = generateTempFile('bbt');
-    alert("out = " + out);
     let fd = fs.openSync(out, 'w');
 
     if (details.cart && (details.program || details.mounts.length || details.data)) {

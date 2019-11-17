@@ -5,8 +5,12 @@
 //
 
 const version = require('../package').version;
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const bbt = require('./bbt');
 const dataref = require('./dataref');
+const npmRun = require('npm-run');
 
 let details = bbt.parse();
 
@@ -21,6 +25,21 @@ if (process.argv.length < 4) {
 let output = process.argv[2];
 let input = process.argv.slice(3);
 
+function generateTempFile(ext) {
+    n = Math.floor(Math.random() * 1000000);
+    return path.join(os.tmpdir(), 'backbit' + n + '.' + ext);
+}
+
+function addImage(s) {
+    if (details.images.length < 10) {
+        details.images.push(dataref.generateFromPath(s));
+    } else {
+        console.error("Too many images (only 10 are allowed)");
+        process.exit(1);
+    }
+}
+
+let cleanup = [];
 while (input.length) {
     let s = input.shift();
 
@@ -59,9 +78,24 @@ while (input.length) {
             }
             break;
         case 'sid':
+            if (!details.music) {
+                details.music = dataref.generateFromPath(s);
+            } else {
+                console.error("Too many SID files (only 1 is allowed)");
+                process.exit(1);
+            }
+            break;
+        case 'jpg':
+        case 'gif':
+        case 'png':
+            out = generateTempFile('kla');
+            npmRun.spawnSync('retropixels', [s, out]);
+            addImage(out);
+            cleanup.push(out);
+            break;
         case 'kla':
-            console.error("not supported yet");
-            process.exit(1);
+        case 'koa':
+            addImage(s);
             break;
         default:
             if (!details.data) {
@@ -81,3 +115,8 @@ catch (e) {
     console.error(e.toString());
     process.exit(1);
 }
+
+// clean up temp files
+cleanup.forEach(s => {
+    fs.unlinkSync(s);    
+});
