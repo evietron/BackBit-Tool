@@ -227,7 +227,7 @@ function writeCart(fd, cart) {
     }
 }
 
-function writeMount(fd, mount) {
+function writeMount(fd, device, mount) {
     let data = dataref.read(mount);
     if (mount.offset) {
         // pre-rendered
@@ -243,7 +243,7 @@ function writeMount(fd, mount) {
         } else {
             throw "Invalid disk image";
         }
-        writeBlock(fd, 'MOUNT' + ext, 8 + i, data);
+        writeBlock(fd, 'MOUNT' + ext, device, data);
     }
 }
 
@@ -329,7 +329,7 @@ function build(dest, details) {
             writeCart(fd, details.cart);
         }
         for (let i = 0; i < details.mounts.length; i++) {
-            writeMount(fd, details.mounts[i]);
+            writeMount(fd, 8 + i, details.mounts[i]);
         }
         if (details.data) {
             writeData(fd, details.data);
