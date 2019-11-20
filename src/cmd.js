@@ -10,7 +10,6 @@ const os = require('os');
 const path = require('path');
 const bbt = require('./bbt');
 const dataref = require('./dataref');
-const npmRun = require('npm-run');
 
 let details = bbt.parse();
 
