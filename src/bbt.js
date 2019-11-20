@@ -290,7 +290,7 @@ function writeMusic(fd, music) {
 
 function generateTempFile(ext) {
     n = Math.floor(Math.random() * 1000000);
-    return path.join(os.tmpdir(), 'backbit' + n + '.' + ext);
+    return '~backbit' + n + '.' + ext;
 }
 
 function writeImage(fd, image) {
