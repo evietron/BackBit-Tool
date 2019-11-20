@@ -1,8 +1,6 @@
 //
 // This is the main code for the NW.js application (gets loaded by the index.html)
 //
-try {
-
 const version = require('../package').version;
 const bbt = require('./bbt');
 const dataref = require('./dataref');
@@ -273,6 +271,20 @@ function setupRemoveImage(index) {
     };
 }
 
+function initWindow() {
+    nw.Window.get().show();
+    nw.Window.get().focus();
+
+    // fix mac application menu title in production build
+    if (process.versions['nw-flavor'] === 'normal') {
+        if (process.platform === 'darwin') {
+            var mb = new nw.Menu({type: 'menubar'});
+            mb.createMacBuiltin('BackBit Tool');
+            nw.Window.get().menu = mb;
+        }
+    }
+}
+
 function initApp() {
     $('.version').innerHTML = "Tool v" + version;
     $('#buttonNew').addEventListener('click', newFile);
@@ -312,26 +324,9 @@ function initApp() {
     $('#txtRelease').addEventListener('blur', updateButtonStates);
     $('#txtManual').addEventListener('blur', updateButtonStates);
     updateButtonStates();
+
+    // now that DOM is fully loaded init the window
+    initWindow();
 };
 
-function initWindow() {
-    nw.Window.get().show();
-    nw.Window.get().focus();
-
-    // fix mac application menu title in production build
-    if (process.versions['nw-flavor'] === 'normal') {
-        if (process.platform === 'darwin') {
-            var mb = new nw.Menu({type: 'menubar'});
-            mb.createMacBuiltin('BackBit Tool');
-            nw.Window.get().menu = mb;
-        }
-    }
-}
-
 document.addEventListener('DOMContentLoaded', initApp);
-nw.Window.get().on('loaded', initWindow);
-
-}
-catch (e) {
-    alert(e.toString());
-}
