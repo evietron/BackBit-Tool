@@ -46,6 +46,7 @@ To run COMMAND-LINE version once installed:
 To setup for development (first time only):
 * `git clone https://github.com/evietron/BackBit-Tool.git`
 * `cd BackBit-Tool`
+* `npm i`
 * `npm run dev`
 
 To execute in DEBUG mode:
