@@ -308,7 +308,10 @@ function writeImage(fd, image) {
 
 function writeText(fd, id, ref) {
     if (ref) {
-        writeBlock(fd, id.substr(0, 8), stringToUInt32(id.substr(8)), dataref.read(ref)); 
+        let data = dataref.read(ref);
+        if (data && data.length) {
+            writeBlock(fd, id.substr(0, 8), stringToUInt32(id.substr(8)), data);
+        }
     }
 }
 
