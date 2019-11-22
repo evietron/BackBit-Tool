@@ -313,7 +313,7 @@ function writeText(fd, id, ref) {
 }
 
 function build(dest, details) {
-    let out = generateTempFile('bbt');
+    let out = dest + ".tmp";
     let fd = fs.openSync(out, 'w');
 
     if (details.cart && (details.program || details.mounts.length || details.data)) {
