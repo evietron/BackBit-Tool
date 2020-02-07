@@ -55,6 +55,13 @@ const PADDING_OFFSET = 16;
 // - parameter: the device # (typically 8-15)
 // - content is a D64/D71/D81 file
 
+// Version of disk image
+// - type id: "SAVESD64" / "SAVESD71" / "SAVESD81"
+// - parameter: the device # (typically 8-15)
+// - content begins with 48-byte name of this version
+// - following version name is a D64/D71/D81 file
+// - version names MUST be grouped together and not appear out of order
+
 // Extended data chunk
 // - type id: "EXTENDEDDATA"
 // - content is user-defined binary data
