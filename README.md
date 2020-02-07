@@ -24,7 +24,7 @@ Comes built with an easy-to-use GUI for Windows (32 & 64-bit), OSX (64-bit), & L
 Also usable with a command-line interface:
 
 ```
-BackBitTool 1.1.0
+BackBitTool 1.2.2
 Usage: BackBitTool <output.bbt> <input files...>
 Supported input files include: PRG,CRT,D64,D71,D81,SID,KLA
 Use any unsupported extension to add extended data
