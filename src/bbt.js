@@ -417,6 +417,11 @@ function parse(src) {
                 case "MOUNTD81":
                     details.mounts.push(block.ref);
                     break;
+                case "SAVESD64":
+                case "SAVESD71":
+                case "SAVESD81":
+                    // these are valid, but ignored
+                    break;
                 case "EXTENDED":
                     details.data = block.ref;
                     break;
