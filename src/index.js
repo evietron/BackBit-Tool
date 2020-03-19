@@ -108,6 +108,7 @@ function textToRef(text) {
 }
 
 function compileTextFields() {
+    details.platform = $('#platform').value;
     details.text.title = textToRef($('#txtTitle').value);
     details.text.version = textToRef($('#txtVersion').value);
     details.text.copyright = textToRef($('#txtCopyright').value);
@@ -125,6 +126,7 @@ function refToText(ref) {
 }
 
 function interpretTextFields() {
+    $('#platform').value = details.platform;
     $('#txtTitle').value = refToText(details.text.title);
     $('#txtVersion').value = refToText(details.text.version);
     $('#txtCopyright').value = refToText(details.text.copyright);

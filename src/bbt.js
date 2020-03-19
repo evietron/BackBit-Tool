@@ -37,7 +37,7 @@ const PADDING_OFFSET = 16;
 
 // Starting chunk
 // - type id: "BACKBIT " (ends with a space)
-// - parameter: "C64 " (refers to system file is intended for, only C64 for now)
+// - parameter: "C64 " (refers to system file is intended for: C64, C128, V20)
 // - content is the version name, i.e. "VERSION X.X.X"
 
 // Autostart program
@@ -193,8 +193,14 @@ function writeBlock(fd, name, id, data) {
     }
 }
 
-function writeHeader(fd) {
-    writeBlock(fd, 'BACKBIT ', stringToUInt32('C64 '), Buffer.from(stringToBytes('VERSION ' + version)));
+function writeHeader(fd, platform) {
+    let platformStr = 'C64 ';
+    if (platform === 'v20') {
+        platformStr = 'V20 ';
+    } else if (platform === 'c128') {
+        platformStr = 'C128';
+    }
+    writeBlock(fd, 'BACKBIT ', stringToUInt32(platformStr), Buffer.from(stringToBytes('VERSION ' + version)));
 }
 
 function writeFooter(fd) {
@@ -331,7 +337,7 @@ function build(dest, details) {
     }
 
     if (fd) {
-        writeHeader(fd);
+        writeHeader(fd, details.platform);
         if (details.program) {
             writeProgram(fd, details.program);
         }
@@ -369,6 +375,7 @@ function build(dest, details) {
 
 function parse(src) {
     let details = {
+        platform: 'c64',
         program: null,
         cart: null,
         mounts: [],
@@ -385,6 +392,14 @@ function parse(src) {
         let footer = false;
         if (block.name !== "BACKBIT ") {
             throw "Invalid BBT header";
+            return;
+        }
+        if (block.param === "V20 ") {
+            details.platform = "v20";
+        } else if (block.param === "C128") {
+            details.platform = "c128";
+        } else if (block.param !== "C64 ") {
+            throw "Invalid BBT platform";
             return;
         }
         offset = block.nextOffset;
