@@ -5,7 +5,7 @@ The BackBit Tool is a fully open source cross-platform JavaScript application th
 The BBT file format offers the following innovations:
 * Prepend SID music and title screen/screenshots
 * Autostarts to any program
-* Incorporates up to 8 disk images (D64/D71/D81)
+* Incorporates up to 8 disk images (D64/D71/D81/D8B)
 * Supports up to 4GB of binary data
 * Tags important details about the program, including text and screenshots
 
@@ -26,7 +26,7 @@ Also usable with a command-line interface:
 ```
 BackBitTool 1.2.2
 Usage: BackBitTool <output.bbt> <input files...>
-Supported input files include: PRG,CRT,D64,D71,D81,SID,KLA
+Supported input files include: PRG,CRT,D64,D71,D81,D8B,SID,KLA
 Use any unsupported extension to add extended data
 ```
 

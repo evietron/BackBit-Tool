@@ -16,7 +16,7 @@ let details = bbt.parse();
 if (process.argv.length < 4) {
     console.log("BackBitTool " + version);
     console.log("Usage: BackBitTool [options] <output.bbt> <input files...>");
-    console.log("Supported input files include: PRG,CRT,D64,D71,D81,SID,KLA")
+    console.log("Supported input files include: PRG,CRT,D64,D71,D81,D8B,SID,KLA")
     console.log("Use any unsupported extension to add extended data");
     console.log("Options: -c64, -c128, -v20 (assigns platform, default=c64)")
     process.exit();
@@ -70,6 +70,7 @@ function parseFilename(s) {
         case 'd64':
         case 'd71':
         case 'd81':
+        case 'd8b':
             if (details.mounts.length < 8) {
                 details.mounts.push(dataref.generateFromPath(s));
             } else {

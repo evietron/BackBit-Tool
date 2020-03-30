@@ -51,15 +51,15 @@ const PADDING_OFFSET = 16;
 // - content is a CRT file
 
 // Mounted disk image
-// - type id: "MOUNTD64" / "MOUNTD71" / "MOUNTD81"
+// - type id: "MOUNTD64" / "MOUNTD71" / "MOUNTD81" / "MOUNTD8B"
 // - parameter: the device # (typically 8-15)
-// - content is a D64/D71/D81 file
+// - content is a D64/D71/D81/D8B file
 
 // Version of disk image
-// - type id: "SAVESD64" / "SAVESD71" / "SAVESD81"
+// - type id: "SAVESD64" / "SAVESD71" / "SAVESD81" / "SAVESD8B"
 // - parameter: the device # (typically 8-15)
 // - content begins with 48-byte name of this version
-// - following version name is a D64/D71/D81 file
+// - following version name is a D64/D71/D81/D8B file
 // - version names MUST be grouped together and not appear out of order
 
 // Extended data chunk
@@ -253,6 +253,8 @@ function writeMount(fd, device, mount) {
             ext = "D71";
         } else if (data.length === 819200 || data.length === 822400) {
             ext = "D81";
+        } else if (data.length === 1376256 || data.length === 1381632) {
+            ext = "D8B";
         } else {
             throw "Invalid disk image";
         }
@@ -415,11 +417,13 @@ function parse(src) {
                 case "MOUNTD64":
                 case "MOUNTD71":
                 case "MOUNTD81":
+                case "MOUNTD8B":
                     details.mounts.push(block.ref);
                     break;
                 case "SAVESD64":
                 case "SAVESD71":
                 case "SAVESD81":
+                case "SAVESD8B":
                     // these are valid, but ignored
                     break;
                 case "EXTENDED":
