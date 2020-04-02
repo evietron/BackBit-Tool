@@ -60,8 +60,21 @@ function parseFilename(s) {
             }
             break;
         case 'crt':
-            if (!details.cart) {
+            if (!details.cart && !details.v20) {
                 details.cart = dataref.generateFromPath(s);
+            } else {
+                console.error("Too many cartridge images (only 1 is allowed)");
+                process.exit(1);
+            }
+            break;
+        case '20':
+        case '40':
+        case '60':
+        case '70':
+        case 'a0':
+        case 'b0':
+            if (!details.cart && !details.v20) {
+                details.v20 = dataref.generateFromPath(s);
             } else {
                 console.error("Too many cartridge images (only 1 is allowed)");
                 process.exit(1);

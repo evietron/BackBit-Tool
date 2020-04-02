@@ -50,6 +50,11 @@ const PADDING_OFFSET = 16;
 // - parameter: 32-bit length of physical cartridge size (i.e. 8K would be 8192)
 // - content is a CRT file
 
+// Mounted VIC 20 cartridge
+// - type id: "MOUNTV20"
+// - parameter: 16-bit start address
+// - content is a A0/60/40/20/etc file
+
 // Mounted disk image
 // - type id: "MOUNTD64" / "MOUNTD71" / "MOUNTD81" / "MOUNTD8B"
 // - parameter: the device # (typically 8-15)
@@ -240,6 +245,20 @@ function writeCart(fd, cart) {
     }
 }
 
+function writeV20(fd, cart) {
+    let data = dataref.read(cart);
+    let extIndex = cart.path ? cart.path.lastIndexOf('.') : -1;
+    if (cart.offset) {
+        // pre-rendered
+        writeBuffer(fd, data);
+    } else if (extIndex !== -1) {
+        let addr = +cart.path.substr(extIndex + 1);
+        writeBlock(fd, 'MOUNTV20', addr, data);
+    } else {
+        throw "Cartridge is invalid";
+    }
+}
+
 function writeMount(fd, device, mount) {
     let data = dataref.read(mount);
     if (mount.offset) {
@@ -334,8 +353,8 @@ function build(dest, details) {
     let out = dest + ".tmp";
     let fd = fs.openSync(out, 'w');
 
-    if (details.cart && (details.program || details.mounts.length || details.data)) {
-        throw "Can't combine a cartridge with a program or data";
+    if ((details.cart || details.v20) && details.program) {
+        throw "Can't combine a cartridge with a program";
     }
 
     if (fd) {
@@ -345,6 +364,9 @@ function build(dest, details) {
         }
         if (details.cart) {
             writeCart(fd, details.cart);
+        }
+        if (details.v20) {
+            writeV20(fd, details.v20);
         }
         for (let i = 0; i < details.mounts.length; i++) {
             writeMount(fd, 8 + i, details.mounts[i]);
@@ -413,6 +435,9 @@ function parse(src) {
                     break;
                 case "MOUNTCRT":
                     details.cart = block.ref;
+                    break;
+                case "MOUNTV20":
+                    details.v20 = block.ref;
                     break;
                 case "MOUNTD64":
                 case "MOUNTD71":

@@ -34,6 +34,7 @@ function shortenPath(ref) {
 function isEmpty() {
     return !details.program &&
         !details.cart &&
+        !details.v20 &&
         !details.mounts.length &&
         !details.data &&
         !details.music &&
@@ -48,15 +49,15 @@ function isEmpty() {
     }
 
 function isValid() {
-    return details.program || details.cart || details.mounts.length;
+    return details.program || details.cart || details.v20 || details.mounts.length;
 }
 
 function updateButtonStates() {
     $('#buttonNew').disabled = isEmpty();
     $('#buttonSaveAs').disabled = !isValid();
-    $('#divAddProgram').style.display = (details.program || details.cart) ? 'none' : 'flex';
-    $('#buttonRemoveProgram').style.display = (details.program || details.cart) ? 'flex' : 'none';
-    $('#pathProgram').style.display = (details.program || details.cart) ? 'flex' : 'none';
+    $('#divAddProgram').style.display = (details.program || details.cart || details.v20) ? 'none' : 'flex';
+    $('#buttonRemoveProgram').style.display = (details.program || details.cart || details.v20) ? 'flex' : 'none';
+    $('#pathProgram').style.display = (details.program || details.cart || details.v20) ? 'flex' : 'none';
     $('#divAddMount').style.display = (details.mounts.length === 8) ? 'none' : 'flex';
     for (let i = 1; i <= 8; i++) {
         $('#buttonRemoveMount' + i).style.display =
@@ -177,6 +178,13 @@ function addProgram() {
             details.program = dataref.generateFromPath(path);
         } else if (path.toLowerCase().endsWith('.crt')) {
             details.cart = dataref.generateFromPath(path);
+        } else if (path.toLowerCase().endsWith('.20') ||
+                   path.toLowerCase().endsWith('.40') ||
+                   path.toLowerCase().endsWith('.60') ||
+                   path.toLowerCase().endsWith('.70') ||
+                   path.toLowerCase().endsWith('.a0') ||
+                   path.toLowerCase().endsWith('.b0')) {
+            details.v20 = dataref.generateFromPath(path);
         } else {
             alert("Invalid file format");
         }
@@ -188,6 +196,7 @@ function addProgram() {
 function removeProgram() {
     details.program = null;
     details.cart = null;
+    details.v20 = null;
     updateButtonStates();
 }
 
@@ -209,7 +218,7 @@ function removeMusic() {
 }
 
 function updateRefs() {
-    $('#pathProgram').innerHTML = shortenPath(details.program || details.cart);
+    $('#pathProgram').innerHTML = shortenPath(details.program || details.cart || details.v20);
     for (let i = 0; i < details.mounts.length; i++) {
         $('#pathMount' + (i + 1)).innerHTML = (8 + i) + ': ' + shortenPath(details.mounts[i]);
     }
