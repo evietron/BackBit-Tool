@@ -72,7 +72,7 @@ https://github.com/evietron/BackBit-Tool/blob/master/src/bbt.js
 
 ## D8B File Format
 
-This is a new format, similar to other disk formats but with capacity for about 8 disks and directory entires to match.
+This is a new format, similar to other disk formats but with capacity for about 8 regular disks and directory entires to match.
 
 | Format | Tracks | Sectors | Dir Entries | Dir Track | BAM Sectors | Dir Sectors | BAM bytes/track | Blocks Avail | Capacity vs D64 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
