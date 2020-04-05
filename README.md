@@ -60,3 +60,23 @@ To execute PRODUCTION build (Mac OSX only for now):
 
 To install PRODUCTION build in your Applications folder (Mac OSX only for now):
 * `npm run app`
+
+## BBT File Format
+
+This is a (somewhat) human readable format when viewed in a hex editor when viewed with a column with of 16 bytes.
+
+All fields begin on 16-byte offsets.
+
+See details here:
+https://github.com/evietron/BackBit-Tool/blob/master/src/bbt.js
+
+## D8B File Format
+
+This is a new format, similar to other disk formats but with a slightly larger amount of data
+
+| Format | Tracks | Sectors | Dir Track | Dir Sector | BAM bytes/track | Blocks Avail | Capacity vs D64 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| D64 | 35 | 17-21 | 18 | 1 | 4 | 664 | 1x |
+| D71 | 35x2 | 17-21 | 18 | 1 | 4 | 1328 | 2x |
+| D81 | 80 | 40 | 40 | 3 | 6 | 3160 | 4.8x |
+| D8B | 40 | 144 | 1 | 4 | 18 | 5616 | 8.5x |
