@@ -63,7 +63,7 @@ To install PRODUCTION build in your Applications folder (Mac OSX only for now):
 
 ## BBT File Format
 
-This is a (somewhat) human readable format when viewed in a hex editor with a column with of 16 bytes.
+This is a (somewhat) human readable format when viewed in a hex editor with a column width of 16 bytes.
 
 All fields begin on 16-byte offsets.
 
