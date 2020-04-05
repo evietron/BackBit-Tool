@@ -74,9 +74,9 @@ https://github.com/evietron/BackBit-Tool/blob/master/src/bbt.js
 
 This is a new format, similar to other disk formats but with a slightly larger amount of data
 
-| Format | Tracks | Sectors | Dir Entries | Dir Track | Dir Sector | BAM bytes/track | Blocks Avail | Capacity vs D64 |
+| Format | Tracks | Sectors | Dir Entries | Dir Track | Dir Sectors | BAM bytes/track | Blocks Avail | Capacity vs D64 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D64 | 35 | 17-21 | 144 | 18 | 1 | 4 | 664 | 1x |
-| D71 | 35x2 | 17-21 | 144 | 18 | 1 | 4 | 1328 | 2x |
-| D81 | 80 | 40 | 296 | 40 | 3 | 6 | 3160 | 4.8x |
-| D8B | 40 | 144 | 1120 | 1 | 4 | 18 | 5616 | 8.5x |
+| D64 | 35 | 17-21 | 144 | 18 | 1-18 | 4 | 664 | 1x |
+| D71 | 35x2 | 17-21 | 144 | 18 | 1-18 | 4 | 1328 | 2x |
+| D81 | 80 | 40 | 296 | 40 | 3-39 | 6 | 3160 | 4.8x |
+| D8B | 40 | 144 | 1120 | 1 | 4-143 | 18 | 5616 | 8.5x |
