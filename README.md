@@ -74,7 +74,7 @@ https://github.com/evietron/BackBit-Tool/blob/master/src/bbt.js
 
 This is a new format, similar to other disk formats but with capacity for about 8 regular disks and directory entires to match.
 
-| Format | Tracks | Sectors | Dir Entries | Dir Track | BAM Sectors | Dir Sectors | BAM bytes/track | Blocks Avail | Capacity vs D64 |
+| Format | Tracks | Sectors | Dir Entries | Dir Track | BAM Sector # | Dir Sector # | BAM bytes/track | Blocks Avail | Capacity vs D64 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | D64 | 35 | 17-21 | 144 | 18 | 0 | 1-18 | 4 | 664 | 1x |
 | D71 | 35x2 | 17-21 | 144 | 18 | 0 | 1-18 | 4 | 1328 | 2x |
