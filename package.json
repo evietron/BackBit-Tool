@@ -1,6 +1,6 @@
 {
   "name": "backbit-tool",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "",
   "main": "src/index.html",
   "bin": {
@@ -12,16 +12,18 @@
     "height": 750,
     "min_width": 1000,
     "min_height": 750,
-    "icon": "icon.png",
+    "icon": "src/icon.png",
     "show": false
   },
   "scripts": {
-    "dev": "npm install nw@0.39.3 --nwjs_build_type=sdk",
+    "dev": "npm install nw@0.48.3 --nwjs_build_type=sdk",
     "start": "nw",
     "deploy": "node deploy.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "open \"build/BackBit Tool/osx64/BackBit Tool.app\"",
-    "app": "rm -rf \"/Applications/BackBit Tool.app\" && cp -R \"build/BackBit Tool/osx64/BackBit Tool.app\" /Applications"
+    "prod-win32": "cmd /c \"build\\BackBit Tool\\win32\\BackBit Tool.exe\"",
+    "prod-win64": "cmd /c \"build\\BackBit Tool\\win64\\BackBit Tool.exe\"",
+    "prod-osx": "open \"build/BackBit Tool/osx64/BackBit Tool.app\"",
+    "app-osx": "rm -rf \"/Applications/BackBit Tool.app\" && cp -R \"build/BackBit Tool/osx64/BackBit Tool.app\" /Applications"
   },
   "repository": {
     "type": "git",
@@ -34,7 +36,7 @@
   },
   "homepage": "https://github.com/evietron/BackBit-Tool#readme",
   "dependencies": {
-    "nw": "^0.44.5"
+    "nw": "^0.48.3"
   },
   "devDependencies": {
     "nw-builder": "^3.5.7"

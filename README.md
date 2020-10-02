@@ -24,7 +24,7 @@ Comes built with an easy-to-use GUI for Windows (32 & 64-bit), OSX (64-bit), & L
 Also usable with a command-line interface:
 
 ```
-BackBitTool 1.2.2
+BackBitTool 1.2.3
 Usage: BackBitTool <output.bbt> <input files...>
 Supported input files include: PRG,CRT,D64,D71,D81,D8B,SID,KLA
 Use any unsupported extension to add extended data
@@ -52,14 +52,17 @@ To setup for development (first time only):
 To execute in DEBUG mode:
 * `npm start`
 
-To compile PRODUCTION builds (outputs to the **build** folder):
+To compile PRODUCTION builds for all platforms (outputs to the **build** folder):
+NOTE: On Windows, you have to run cmd.exe as Administrator to compile for OSX
 * `npm run deploy`
 
-To execute PRODUCTION build (Mac OSX only for now):
-* `npm run prod`
+To execute PRODUCTION build:
+* `npm run prod-win32`, or
+* `npm run prod-win64`, or
+* `npm run prod-osx`
 
-To install PRODUCTION build in your Applications folder (Mac OSX only for now):
-* `npm run app`
+To install PRODUCTION build in your Applications folder on Mac OSX:
+* `npm run app-osx`
 
 ## BBT File Format
 
@@ -79,4 +82,4 @@ This is a new format, similar to other disk formats but with capacity for about 
 | D64 | 35 | 17-21 | 144 | 18 | 0 | 1-18 | 4 | 664 | 1x |
 | D71 | 70 | 17-21 | 144 | 18/53 | 0 | 1-18 | 4 | 1328 | 2x |
 | D81 | 80 | 40 | 296 | 40 | 1-2 | 3-39 | 6 | 3160 | 4.8x |
-| D8B | 40 | 144 | 1120 | 1 | 1-3 | 4-143 | 18 | 5616 | 8.5x |
+| D8B | 40 | 136 | 1056 | 1 | 1-3 | 4-135 | 18 | 5304 | 8x |
