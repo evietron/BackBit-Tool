@@ -53,7 +53,8 @@ To execute in DEBUG mode:
 * `npm start`
 
 To compile PRODUCTION builds for all platforms (outputs to the **build** folder):
-NOTE: On Windows, you have to run cmd.exe as Administrator to compile for OSX
+
+_NOTE: On Windows, you have to run cmd.exe as Administrator to compile for OSX_
 * `npm run deploy`
 
 To execute PRODUCTION build:
