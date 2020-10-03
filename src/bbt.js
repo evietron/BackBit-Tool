@@ -353,10 +353,6 @@ function build(dest, details) {
     let out = dest + ".tmp";
     let fd = fs.openSync(out, 'w');
 
-    if ((details.cart || details.v20) && details.program) {
-        throw "Can't combine a cartridge with a program";
-    }
-
     if (fd) {
         writeHeader(fd, details.platform);
         if (details.program) {

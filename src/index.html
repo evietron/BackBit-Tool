@@ -8,7 +8,8 @@
   <body>
     <input style="display:none" id="saveFileDialog" type="file" nwsaveas="untitled" />
     <input style="display:none" id="bbtFileDialog" type="file" accept=".bbt" />
-    <input style="display:none" id="prgFileDialog" type="file" accept=".prg,.crt,.20,.40,.60,.70,.a0,.b0" />
+    <input style="display:none" id="prgFileDialog" type="file" accept=".prg" />
+    <input style="display:none" id="crtFileDialog" type="file" accept=".crt,.20,.40,.60,.70,.a0,.b0" />
     <input style="display:none" id="d64FileDialog" type="file" accept=".d64,.d71,.d81,.d8b" />
     <input style="display:none" id="sidFileDialog" type="file" accept=".sid" />
     <input style="display:none" id="klaFileDialog" type="file" accept=".kla,.koa" />
@@ -31,15 +32,22 @@
               <option value="c128">Commodore 128</option>
               <option value="v20">VIC 20/VC20</option>
             </select>
-            <div class="level">LEVEL I: Startup Program or Cartridge</div>
-            <div class="blurb">Not required, but if not present then a mounted disk must be present.</div>
+            <div class="level">Startup Program</div>
+            <div class="blurb">Runs immediately upon execution.</div>
             <div class="row">
               <div class="item" id="pathProgram"></div>
-              <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG *.CRT *.?0</div></div>
+              <div id="divAddProgram"><button id="buttonAddProgram">+</button><div class="flag">*.PRG</div></div>
               <button id="buttonRemoveProgram" class="close">X</button>
             </div>
-            <div class="level">LEVEL II: Mounted Disks</div>
-            <div class="blurb">Can mount up to 8 disks. If no startup program is present, the program will be started with <strong>LOAD "*",8,1</strong>.</div>
+            <div class="level">Mounted Cartridge</div>
+            <div class="blurb">Can be combined with a startup program or start by itself.</div>
+            <div class="row">
+              <div class="item" id="pathCartridge"></div>
+              <div id="divAddCartridge"><button id="buttonAddCartridge">+</button><div class="flag">*.CRT *.?0</div></div>
+              <button id="buttonRemoveCartridge" class="close">X</button>
+            </div>
+            <div class="level">Mounted Disks</div>
+            <div class="blurb">Can mount up to 8 disks. If no startup program or mounted cartridge is present, the program will be started with <strong>LOAD "*",8,1</strong>.</div>
             <div class="row">
               <span class="item-span"><div class="item" id="pathMount1"></div><button id="buttonRemoveMount1" class="close">X</button></span>
               <span class="item-span"><div class="item" id="pathMount2"></div><button id="buttonRemoveMount2" class="close">X</button></span>
@@ -51,7 +59,7 @@
               <span class="item-span"><div class="item" id="pathMount8"></div><button id="buttonRemoveMount8" class="close">X</button></span>
             </div>
             <div id="divAddMount"><button id="buttonAddMount">+</button><div class="flag">*.D64 *.D71 *.D81 *.D8B</div></div>
-            <div class="level">LEVEL III: Extended Data</div>
+            <div class="level">Extended Data</div>
             <div class="blurb">Optional. Add raw binary data, accessible in 64K chunks. Total BBT file size must be under 4GB.</div>
             <div class="row">
               <div class="item" id="pathData"></div>

@@ -55,9 +55,12 @@ function isValid() {
 function updateButtonStates() {
     $('#buttonNew').disabled = isEmpty();
     $('#buttonSaveAs').disabled = !isValid();
-    $('#divAddProgram').style.display = (details.program || details.cart || details.v20) ? 'none' : 'flex';
-    $('#buttonRemoveProgram').style.display = (details.program || details.cart || details.v20) ? 'flex' : 'none';
-    $('#pathProgram').style.display = (details.program || details.cart || details.v20) ? 'flex' : 'none';
+    $('#divAddProgram').style.display = details.program ? 'none' : 'flex';
+    $('#buttonRemoveProgram').style.display = details.program ? 'flex' : 'none';
+    $('#pathProgram').style.display = details.program ? 'flex' : 'none';
+    $('#divAddCartridge').style.display = (details.cart || details.v20) ? 'none' : 'flex';
+    $('#buttonRemoveCartridge').style.display = (details.cart || details.v20) ? 'flex' : 'none';
+    $('#pathCartridge').style.display = (details.cart || details.v20) ? 'flex' : 'none';
     $('#divAddMount').style.display = (details.mounts.length === 8) ? 'none' : 'flex';
     for (let i = 1; i <= 8; i++) {
         $('#buttonRemoveMount' + i).style.display =
@@ -176,7 +179,17 @@ function addProgram() {
     chooseFile('#prgFileDialog', function(path) {
         if (path.toLowerCase().endsWith('.prg')) {
             details.program = dataref.generateFromPath(path);
-        } else if (path.toLowerCase().endsWith('.crt')) {
+        } else {
+            alert("Invalid file format");
+        }
+        updateRefs();
+        updateButtonStates();
+    });
+}
+
+function addCartridge() {
+    chooseFile('#crtFileDialog', function(path) {
+        if (path.toLowerCase().endsWith('.crt')) {
             details.cart = dataref.generateFromPath(path);
         } else if (path.toLowerCase().endsWith('.20') ||
                    path.toLowerCase().endsWith('.40') ||
@@ -195,6 +208,10 @@ function addProgram() {
 
 function removeProgram() {
     details.program = null;
+    updateButtonStates();
+}
+
+function removeCartridge() {
     details.cart = null;
     details.v20 = null;
     updateButtonStates();
@@ -218,7 +235,8 @@ function removeMusic() {
 }
 
 function updateRefs() {
-    $('#pathProgram').innerHTML = shortenPath(details.program || details.cart || details.v20);
+    $('#pathProgram').innerHTML = shortenPath(details.program);
+    $('#pathCartridge').innerHTML = shortenPath(details.cart || details.v20);
     for (let i = 0; i < details.mounts.length; i++) {
         $('#pathMount' + (i + 1)).innerHTML = (8 + i) + ': ' + shortenPath(details.mounts[i]);
     }
@@ -303,6 +321,8 @@ function initApp() {
     $('#buttonSaveAs').addEventListener('click', saveAsFile);
     $('#buttonAddProgram').addEventListener('click', addProgram);
     $('#buttonRemoveProgram').addEventListener('click', removeProgram);
+    $('#buttonAddCartridge').addEventListener('click', addCartridge);
+    $('#buttonRemoveCartridge').addEventListener('click', removeCartridge);
     $('#buttonAddMount').addEventListener('click', addMount);
     $('#buttonRemoveMount1').addEventListener('click', setupRemoveMount(0));
     $('#buttonRemoveMount2').addEventListener('click', setupRemoveMount(1));
