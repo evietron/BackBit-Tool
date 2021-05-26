@@ -37,7 +37,7 @@ const PADDING_OFFSET = 16;
 
 // Starting chunk
 // - type id: "BACKBIT " (ends with a space)
-// - parameter: "C64 " (refers to system file is intended for: C64, C128, V20)
+// - parameter: "C64 " (refers to system file is intended for: C64, C128, PLS4, V20)
 // - content is the version name, i.e. "VERSION X.X.X"
 
 // Autostart program
@@ -182,6 +182,7 @@ function readBlockInfo(src, fd, offset) {
     return {
         name,
         param,
+        bytes,
         ref,
         nextOffset
     };
@@ -202,6 +203,8 @@ function writeHeader(fd, platform) {
     let platformStr = 'C64 ';
     if (platform === 'v20') {
         platformStr = 'V20 ';
+    } else if (platform === 'pls4') {
+        platformStr = 'PLS4';
     } else if (platform === 'c128') {
         platformStr = 'C128';
     }
@@ -252,7 +255,7 @@ function writeV20(fd, cart) {
         // pre-rendered
         writeBuffer(fd, data);
     } else if (extIndex !== -1) {
-        let addr = +cart.path.substr(extIndex + 1);
+        let addr = Number("0x" + cart.path.substr(extIndex + 1) + "00");
         writeBlock(fd, 'MOUNTV20', addr, data);
     } else {
         throw "Cartridge is invalid";
@@ -416,6 +419,8 @@ function parse(src) {
         }
         if (block.param === "V20 ") {
             details.platform = "v20";
+        } else if (block.param === "PLS4") {
+            details.platform = "pls4";
         } else if (block.param === "C128") {
             details.platform = "c128";
         } else if (block.param !== "C64 ") {
@@ -496,6 +501,70 @@ function parse(src) {
     return details;
 }
 
+function extractProgram(name, bytes, ref) {
+    let fd = fs.openSync(name, 'w');
+    let data = dataref.read(ref);
+    fs.writeSync(fd, data, 8, 2);
+    fs.writeSync(fd, data, 16, bytes);
+    fs.closeSync(fd);
+}
+
+function extractData(name, bytes, ref) {
+    let fd = fs.openSync(name, 'w');
+    let data = dataref.read(ref);
+    fs.writeSync(fd, data, 16, bytes);
+    fs.closeSync(fd);
+}
+
+function extract(src) {
+    if (src) {
+        let extIndex = src.lastIndexOf('.');
+        let prefix = (extIndex === -1) ? src : src.substr(0, extIndex);
+        extIndex = src.lastIndexOf('\\');
+        if (extIndex === -1) {
+            extIndex = src.lastIndexOf('/');
+        }
+        prefix = prefix.substr(extIndex + 1);
+        let fd = fs.openSync(src, "r");
+        let offset = 0;
+        let block = readBlockInfo(src, fd, 0);
+        let footer = false;
+        if (block.name !== "BACKBIT ") {
+            throw "Invalid BBT header";
+            return;
+        }
+        offset = block.nextOffset;
+        block = readBlockInfo(src, fd, offset);
+        while (!footer && block.nextOffset !== offset) {
+            switch (block.name) {
+                case "STARTPRG":
+                    extractProgram(prefix + '.prg', block.bytes, block.ref);
+                    break;
+                case "MOUNTCRT":
+                    extractData(prefix + '.crt', block.bytes, block.ref);
+                    break;
+                case "MOUNTV20":
+                    extractData(prefix + '.' + Number(block.param.charCodeAt(2)).toString(16), block.bytes, block.ref);
+                    break;
+                case "MOUNTD64":
+                case "MOUNTD71":
+                case "MOUNTD81":
+                case "MOUNTD8B":
+                    extractData(prefix + block.param.charCodeAt(3) + '.' + block.name.substr(5), block.bytes, block.ref);
+                    break;
+                case "EXTENDED":
+                    extractData(prefix + '.bin', block.bytes, block.ref);
+                    break;
+                case "BACKBITS":
+                    footer = true;
+                    break;
+            }
+            offset = block.nextOffset;
+            block = readBlockInfo(src, fd, offset);
+        }
+    }
+}
+
 function stripContent(data) {
     // strip byte buffer into just data content
     let len = getContentLenFromHeader(data);
@@ -504,6 +573,7 @@ function stripContent(data) {
 
 module.exports = {
     build,
+    extract,
     parse,
     stripContent
 }

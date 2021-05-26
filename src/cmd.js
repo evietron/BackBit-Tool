@@ -15,14 +15,16 @@ let details = bbt.parse();
 
 if (process.argv.length < 4) {
     console.log("BackBitTool " + version);
-    console.log("Usage: BackBitTool [options] <output.bbt> <input files...>");
+    console.log("Usage: BackBitTool [options] <file.bbt> [input files...]");
     console.log("Supported input files include: PRG,CRT,D64,D71,D81,D8B,SID,KLA")
     console.log("Use any unsupported extension to add extended data");
-    console.log("Options: -c64, -c128, -v20 (assigns platform, default=c64)")
+    console.log("Options: -c64, -c128, -pls4, -v20 (assigns platform, default=c64)")
+    console.log("         -extract (extract contents to current directory)")
     process.exit();
 }
 
 let input = process.argv.slice(2);
+let extract = false;
 
 function addImage(s) {
     if (details.images.length < 10) {
@@ -34,8 +36,10 @@ function addImage(s) {
 }
 
 function parseOption(s) {
-    if (s === 'c64' || s === 'c128' || s === 'v20') {
+    if (s === 'c64' || s === 'c128' || s === 'pls4' || s === 'v20') {
         details.platform = s;
+    } else if (s === 'extract') {
+        extract = true;
     } else {
         console.error("Invalid option: " + s);
         process.exit(1);
@@ -114,21 +118,25 @@ function parseFilename(s) {
     }
 }
 
-let output = '';
+let filename = '';
 while (input.length) {
     let s = input.shift();
 
     if (s.startsWith('-')) {
         parseOption(s.substr(1));
-    } else if (output.length === 0) {
-        output = s;
+    } else if (filename.length === 0) {
+        filename = s;
     } else {
         parseFilename(s);
     }
 }
 
 try {
-    bbt.build(output, details);
+    if (extract) {
+        bbt.extract(filename);
+    } else {
+        bbt.build(filename, details);
+    }
 }
 catch (e) {
     console.error(e.toString());
