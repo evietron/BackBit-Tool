@@ -11,8 +11,6 @@ The BBT file format offers the following innovations:
 
 While this format is designed to integrate with the BackBit cartridge, it is likely that emulators will eventually support this format once there is enough demand.
 
-For the latest compiled build, find it at http://backbit.io/downloads/Tool/.
-
 To discuss working on this tool, go to the forum at http://forum.backbit.io.
 
 The cartridge is available for purchase at http://store.backbit.io.
